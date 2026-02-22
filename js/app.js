@@ -190,6 +190,10 @@ function showApp() {
     } else {
         showPatientModal();
     }
+    
+    if (typeof applyTranslations === 'function') {
+        applyTranslations();
+    }
 }
 
 function showSettings() {

@@ -1229,3 +1229,14 @@ function applyTranslations() {
         el.title = t(key);
     });
 }
+
+window.setLanguage = setLanguage;
+window.t = t;
+window.detectLanguage = detectLanguage;
+window.applyTranslations = applyTranslations;
+
+function onLangChange(event) {
+    setLanguage(event.target.value);
+}
+
+window.onLangChange = onLangChange;
