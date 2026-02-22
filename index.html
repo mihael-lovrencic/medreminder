@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedReminder - Medicine Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .medicine-list {
+            list-style: none;
+        }
+        
+        .medicine-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+        
+        .medicine-item:hover {
+            background: #f0f1f2;
+        }
+        
+        .medicine-info {
+            flex: 1;
+        }
+        
+        .medicine-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .medicine-dosage {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        
+        .medicine-time {
+            color: #667eea;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-take {
+            flex: 1;
+            background: #10b981;
+            padding: 10px;
+        }
+        
+        .btn-take:hover {
+            background: #059669;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            width: auto;
+            padding: 10px 16px;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .taken {
+            opacity: 0.7;
+            background: #d1fae5;
+        }
+        
+        .taken .medicine-name {
+            text-decoration: line-through;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-taken {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #888;
+            padding: 40px 20px;
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💊 MedReminder</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('today')">Today</button>
+            <button class="tab" onclick="showTab('all')">All Medicines</button>
+        </div>
+        
+        <div id="today-tab">
+            <div class="card">
+                <h2>Add Medicine Reminder</h2>
+                <div class="form-group">
+                    <label>Medicine Name</label>
+                    <input type="text" id="medName" placeholder="e.g., Aspirin">
+                </div>
+                <div class="form-group">
+                    <label>Dosage</label>
+                    <input type="text" id="medDosage" placeholder="e.g., 1 tablet">
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="time" id="medTime">
+                </div>
+                <button onclick="addMedicine()">Add Medicine</button>
+            </div>
+            
+            <div class="card">
+                <h2>Today's Schedule</h2>
+                <ul class="medicine-list" id="todayList">
+                    <li class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                        <p>No medicines scheduled for today</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="all-tab" style="display: none;">
+            <div class="card">
+                <h2>All Medicines</h2>
+                <ul class="medicine-list" id="allList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let medicines = JSON.parse(localStorage.getItem('medicines')) || [];
+        let takenToday = JSON.parse(localStorage.getItem('takenToday')) || {};
+
+        function saveMedicines() {
+            localStorage.setItem('medicines', JSON.stringify(medicines));
+        }
+
+        function saveTakenToday() {
+            localStorage.setItem('takenToday', JSON.stringify(takenToday));
+        }
+
+        function addMedicine() {
+            const name = document.getElementById('medName').value.trim();
+            const dosage = document.getElementById('medDosage').value.trim();
+            const time = document.getElementById('medTime').value;
+
+            if (!name || !dosage || !time) {
+                alert('Please fill in all fields');
+                return;
+            }
+                return;
+ medicine = {
+                id: Date.now(),
+                name,
+                dosage,
+                time
+            };
+
+            medicines.push(medicine);
+            medicines.sort((a, b) => a.time.localeCompare(b.time));
+            saveMedicines();
+
+            document.getElementById('medName').value = '';
+            document.getElementById('medDosage').value = '';
+            document.getElementById('medTime').value = '';
+
+            renderLists();
+        }
+
+        function deleteMedicine(id) {
+            medicines = medicines.filter(m => m.id !== id);
+            saveMedicines();
+            renderLists();
+        }
+
+        function markAsTaken(id) {
+            const today = new Date().toISOString().split('T')[0];
+            takenToday[today] = takenToday[today] || [];
+            if (!takenToday[today].includes(id)) {
+                takenToday[today].push(id);
+                saveTakenToday();
+            }
+            renderLists();
+        }
+
+        function markAsNotTaken(id) {
+            const today = new Date().toISOString().split('T')[0];
+            if (takenToday[today]) {
+                takenToday[today] = takenToday[today].filter(mid => mid !== id);
+                saveTakenToday();
+            }
+            renderLists();
+        }
+
+        function renderLists() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTaken = takenToday[today] || [];
+            
+            const todayMedicines = medicines.filter(m => {
+                const medTime = m.time;
+                const now = new Date();
+                const currentTime = now.toTimeString().slice(0, 5);
+                return medTime <= currentTime;
+            });
+
+            const allList = document.getElementById('allList');
+            const todayList = document.getElementById('todayList');
+
+            if (medicines.length === 0) {
+                allList.innerHTML = '<li class="empty-state"><p>No medicines added yet</p></li>';
+            } else {
+                allList.innerHTML = medicines.map(med => {
+                    const isTaken = todayTaken.includes(med.id);
+                    return `
+                        <li class="medicine-item ${isTaken ? 'taken' : ''}">
+                            <div class="medicine-info">
+                                <div class="medicine-name">
+                                    ${med.name}
+                                    <span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">
+                                        ${isTaken ? '✓ Taken' : '○ Pending'}
+                                    </span>
+                                </div>
+                                <div class="medicine-dosage">${med.dosage}</div>
+                                <div class="medicine-time">⏰ ${formatTime(med.time)}</div>
+                            </div>
+                            <div class="btn-group" style="flex-direction: column;">
+                                ${isTaken 
+                                    ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>`
+                                    : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`
+                                }
+                                <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+            }
+
+            if (todayMedicines.length === 0) {
+                todayList.innerHTML = `
+                    <li class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                        <p>No medicines due today</p>
+                    </li>
+                `;
+            } else {
+                todayList.innerHTML = todayMedicines.map(med => {
+                    const isTaken = todayTaken.includes(med.id);
+                    return `
+                        <li class="medicine-item ${isTaken ? 'taken' : ''}">
+                            <div class="medicine-info">
+                                <div class="medicine-name">
+                                    ${med.name}
+                                    <span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">
+                                        ${isTaken ? '✓ Taken' : '○ Pending'}
+                                    </span>
+                                </div>
+                                <div class="medicine-dosage">${med.dosage}</div>
+                                <div class="medicine-time">⏰ ${formatTime(med.time)}</div>
+                            </div>
+                            <div class="btn-group" style="flex-direction: column;">
+                                ${isTaken 
+                                    ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>`
+                                    : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`
+                                }
+                                <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+            }
+        }
+
+        function formatTime(time) {
+            const [hours, minutes] = time.split(':');
+            const h = parseInt(hours);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `${h12}:${minutes} ${ampm}`;
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'today') {
+                document.getElementById('today-tab').style.display = 'block';
+                document.getElementById('all-tab').style.display = 'none';
+            } else {
+                document.getElementById('today-tab').style.display = 'none';
+                document.getElementById('all-tab').style.display = 'block';
+            }
+        }
+
+        renderLists();
+    </script>
+</body>
+</html>
