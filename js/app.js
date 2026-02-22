@@ -1,6 +1,34 @@
 const GOOGLE_CLIENT_ID = '349821944609-gguobung0alaapdnnu9oevqef9952muh.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
+const COMMON_MEDICINES = [
+    'Aspirin', 'Ibuprofen', 'Paracetamol', 'Panadol', 'Nurofen',
+    'Amoxicillin', 'Azithromycin', 'Ciprofloxacin', 'Metronidazole', 'Doxycycline',
+    'Lisinopril', 'Metoprolol', 'Amlodipine', 'Losartan', 'Hydrochlorothiazide',
+    'Metformin', 'Glipizide', 'Insulin', 'Januvia', 'Ozempic',
+    'Omeprazole', 'Pantoprazole', 'Ranitidine', 'Famotidine', 'Misoprostol',
+    'Sertraline', 'Escitalopram', 'Fluoxetine', 'Venlafaxine', 'Diazepam',
+    'Lorazepam', 'Zopiclone', 'Melatonin', 'Stesin', 'Rivotril',
+    'Prednisone', 'Dexamethasone', 'Hydrocortisone', 'Betnovate', 'Diprosone',
+    'Furosemide', 'Spironolactone', 'Aldactone', 'Mannitol', 'Lasix',
+    'Warfarin', 'Clopidogrel', 'Apixaban', 'Rivaroxaban', 'Heparin',
+    'Atorvastatin', 'Simvastatin', 'Rosuvastatin', 'Ezetimibe', 'Fenofibrate',
+    'Levothyroxine', 'Thyroxine', 'Methimazole', 'Propylthiouracil',
+    'Gabapentin', 'Pregabalin', 'Amitriptyline', 'Carbamazepine', 'Levetiracetam',
+    'Morphine', 'Tramadol', 'Codeine', 'Oxycodone', 'Fentanyl',
+    'Diclofenac', 'Naproxen', 'Ketorolac', 'Celecoxib', 'Melfen',
+    'Ventolin', 'Seretide', 'Symbicort', 'Pulmicort', 'Budesonide',
+    'Loratadine', 'Cetirizine', 'Desloratadine', 'Hydroxyzine', 'Benadryl',
+    'Cyclopentolate', 'Tropicamide', 'Timolol', 'Xalatan', 'Lumigan',
+    'Neomycin', 'Polymyxin', 'Tobramycin', 'Ciprofloxacin eye drops', 'FML',
+    'Ursodiol', 'Ursodeoxycholic acid', 'Spasmex', 'Detrol', 'Vesicare',
+    'Motilium', 'Domperidone', 'Metoclopramide', 'Ondansetron', 'Granisetron',
+    'Durogevic', 'Ketonal', 'Lidol', 'Midazolam', 'Fentanyl',
+    'Propofol', 'Rocuronium', 'Succinylcholine', 'Ephedrine', 'Atropine',
+    'Adrenaline', 'Noradrenaline', 'Dopamine', 'Dobutamine', 'Amiodarone',
+    'Adenosin', 'Digoxin', 'Calcium gluconate', 'Magnesium sulfate', 'Potassium chloride'
+].sort();
+
 let currentUser = null;
 let tokenClient = null;
 let accessToken = null;
@@ -8,6 +36,7 @@ let patients = [];
 let medicines = [];
 let takenToday = {};
 let currentPatientId = null;
+let customMedicines = [];
 
 function init() {
     const savedUser = localStorage.getItem('medreminder_user');
@@ -17,8 +46,87 @@ function init() {
             accessToken = currentUser.accessToken;
         }
         loadPatients();
+        loadCustomMedicines();
         showApp();
+        setupMedicineDropdown();
     }
+}
+
+function loadCustomMedicines() {
+    if (!currentUser) return;
+    const key = `medreminder_custom_meds_${currentUser.id}`;
+    customMedicines = JSON.parse(localStorage.getItem(key)) || [];
+}
+
+function saveCustomMedicines() {
+    if (!currentUser) return;
+    const key = `medreminder_custom_meds_${currentUser.id}`;
+    localStorage.setItem(key, JSON.stringify(customMedicines));
+}
+
+function getAllMedicines() {
+    const custom = customMedicines.filter(m => !COMMON_MEDICINES.includes(m));
+    return [...new Set([...COMMON_MEDICINES, ...custom])].sort();
+}
+
+function setupMedicineDropdown() {
+    const input = document.getElementById('medName');
+    const dropdown = document.getElementById('medicineDropdown');
+    
+    input.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length === 0) {
+            dropdown.classList.add('hidden');
+            return;
+        }
+        
+        const allMeds = getAllMedicines();
+        const matches = allMeds.filter(m => m.toLowerCase().includes(query));
+        const showAddNew = !allMeds.some(m => m.toLowerCase() === query);
+        
+        let html = '';
+        
+        if (matches.length > 0) {
+            html += matches.slice(0, 10).map(med => 
+                `<div class="medicine-option" onclick="selectMedicine('${med.replace(/'/g, "\\'")}')">${med}</div>`
+            ).join('');
+        }
+        
+        if (showAddNew) {
+            html += `<div class="medicine-option add-new" onclick="addNewMedicine('${query.replace(/'/g, "\\'")}')">+ Add "${query}" as new medicine</div>`;
+        }
+        
+        if (html) {
+            dropdown.innerHTML = html;
+            dropdown.classList.remove('hidden');
+        } else {
+            dropdown.classList.add('hidden');
+        }
+    });
+    
+    input.addEventListener('blur', () => {
+        setTimeout(() => dropdown.classList.add('hidden'), 200);
+    });
+    
+    input.addEventListener('focus', () => {
+        if (input.value.trim().length > 0) {
+            input.dispatchEvent(new Event('input'));
+        }
+    });
+}
+
+function selectMedicine(name) {
+    document.getElementById('medName').value = name;
+    document.getElementById('medicineDropdown').classList.add('hidden');
+}
+
+function addNewMedicine(name) {
+    if (!customMedicines.includes(name)) {
+        customMedicines.push(name);
+        saveCustomMedicines();
+    }
+    document.getElementById('medName').value = name;
+    document.getElementById('medicineDropdown').classList.add('hidden');
 }
 
 function createUser() {
@@ -392,6 +500,7 @@ async function syncToDrive() {
     try {
         const allData = {
             patients: patients,
+            customMedicines: customMedicines,
             patientData: {}
         };
         
@@ -465,6 +574,9 @@ async function syncFromDrive() {
 
         patients = allData.patients || [];
         savePatients();
+        
+        customMedicines = allData.customMedicines || [];
+        saveCustomMedicines();
         
         Object.keys(allData.patientData || {}).forEach(patientId => {
             localStorage.setItem(getPatientStorageKey(parseInt(patientId)), JSON.stringify(allData.patientData[patientId]));

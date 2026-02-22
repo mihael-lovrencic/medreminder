@@ -54,7 +54,10 @@
                     <h2>Add Medicine Reminder</h2>
                     <div class="form-group">
                         <label>Medicine Name</label>
-                        <input type="text" id="medName" placeholder="e.g., Aspirin">
+                        <div class="medicine-select-wrapper">
+                            <input type="text" id="medName" placeholder="Search medicine..." autocomplete="off">
+                            <div id="medicineDropdown" class="medicine-dropdown hidden"></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Dosage</label>
