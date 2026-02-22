@@ -230,9 +230,9 @@ function renderPatientList() {
             <li class="patient-item ${p.id === currentPatientId ? 'active' : ''}" onclick="selectPatient(${p.id})">
                 <div class="patient-info">
                     <div class="patient-name">${p.name}</div>
-                    <div class="patient-room">${p.room || 'No room'}</div>
+                    <div class="patient-room">${p.room || t('noRoom')}</div>
                 </div>
-                <button class="btn-delete" onclick="event.stopPropagation(); deletePatient(${p.id})">Delete</button>
+                <button class="btn-delete" onclick="event.stopPropagation(); deletePatient(${p.id})">${t('delete')}</button>
             </li>
         `).join('');
     }
