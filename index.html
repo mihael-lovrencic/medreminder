@@ -155,17 +155,11 @@
     </div>
 
     <script src="js/i18n.js"></script>
-    <script src="js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            currentLang = detectLanguage();
-            document.getElementById('langSelector').value = currentLang;
+        initI18n().then(() => {
             applyTranslations();
         });
-        
-        function onLangChange(event) {
-            setLanguage(event.target.value);
-        }
     </script>
+    <script src="js/app.js"></script>
 </body>
 </html>
