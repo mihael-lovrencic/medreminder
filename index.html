@@ -4,439 +4,425 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedReminder - Medicine Tracker</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .card h2 {
-            color: #333;
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 16px;
-        }
-        
-        label {
-            display: block;
-            color: #555;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .medicine-list {
-            list-style: none;
-        }
-        
-        .medicine-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            transition: background 0.2s;
-        }
-        
-        .medicine-item:hover {
-            background: #f0f1f2;
-        }
-        
-        .medicine-info {
-            flex: 1;
-        }
-        
-        .medicine-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-        }
-        
-        .medicine-dosage {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
-        
-        .medicine-time {
-            color: #667eea;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .btn-take {
-            flex: 1;
-            background: #10b981;
-            padding: 10px;
-        }
-        
-        .btn-take:hover {
-            background: #059669;
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-        
-        .btn-delete {
-            background: #ef4444;
-            width: auto;
-            padding: 10px 16px;
-        }
-        
-        .btn-delete:hover {
-            background: #dc2626;
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        .taken {
-            opacity: 0.7;
-            background: #d1fae5;
-        }
-        
-        .taken .medicine-name {
-            text-decoration: line-through;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .status-taken {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .tab.active {
-            background: white;
-            color: #667eea;
-        }
-        
-        .empty-state {
-            text-align: center;
-            color: #888;
-            padding: 40px 20px;
-        }
-        
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { color: white; text-align: center; margin-bottom: 30px; font-size: 2rem; }
+        .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .card h2 { color: #333; margin-bottom: 16px; font-size: 1.2rem; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; color: #555; margin-bottom: 6px; font-weight: 500; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #6c757d; }
+        .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .btn-google { background: #4285f4; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .medicine-list { list-style: none; }
+        .medicine-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; }
+        .medicine-info { flex: 1; }
+        .medicine-name { font-weight: 600; color: #333; font-size: 1.1rem; }
+        .medicine-dosage { color: #666; font-size: 0.9rem; margin-top: 4px; }
+        .medicine-time { color: #667eea; font-weight: 500; font-size: 0.9rem; }
+        .btn-group { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-take { flex: 1; background: #10b981; padding: 10px; }
+        .btn-delete { background: #ef4444; width: auto; padding: 10px 16px; }
+        .taken { opacity: 0.7; background: #d1fae5; }
+        .taken .medicine-name { text-decoration: line-through; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-taken { background: #d1fae5; color: #065f46; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 12px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .tab.active { background: white; color: #667eea; }
+        .empty-state { text-align: center; color: #888; padding: 40px 20px; }
+        .user-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; color: white; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: #667eea; font-weight: bold; }
+        .sync-status { font-size: 0.85rem; margin-top: 10px; padding: 8px; border-radius: 6px; text-align: center; }
+        .sync-status.synced { background: #d1fae5; color: #065f46; }
+        .sync-status.pending { background: #fef3c7; color: #92400e; }
+        .hidden { display: none !important; }
+        .login-screen { text-align: center; padding: 40px; }
+        .login-screen h2 { margin-bottom: 20px; }
+        .login-screen p { color: #666; margin-bottom: 30px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💊 MedReminder</h1>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('today')">Today</button>
-            <button class="tab" onclick="showTab('all')">All Medicines</button>
+        <div id="loginScreen" class="card login-screen">
+            <h2>Welcome to MedReminder</h2>
+            <p>Track your medicines and sync across devices</p>
+            <div class="form-group">
+                <input type="text" id="userName" placeholder="Enter your name">
+            </div>
+            <button onclick="createUser()">Continue as Local User</button>
+            <button class="btn-google" onclick="initGoogleSync()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign in with Google
+            </button>
         </div>
-        
-        <div id="today-tab">
-            <div class="card">
-                <h2>Add Medicine Reminder</h2>
-                <div class="form-group">
-                    <label>Medicine Name</label>
-                    <input type="text" id="medName" placeholder="e.g., Aspirin">
+
+        <div id="appScreen" class="hidden">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userNameDisplay">User</span>
                 </div>
-                <div class="form-group">
-                    <label>Dosage</label>
-                    <input type="text" id="medDosage" placeholder="e.g., 1 tablet">
-                </div>
-                <div class="form-group">
-                    <label>Time</label>
-                    <input type="time" id="medTime">
-                </div>
-                <button onclick="addMedicine()">Add Medicine</button>
+                <button class="btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showSettings()">Settings</button>
             </div>
-            
-            <div class="card">
-                <h2>Today's Schedule</h2>
-                <ul class="medicine-list" id="todayList">
-                    <li class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                        </svg>
-                        <p>No medicines scheduled for today</p>
-                    </li>
-                </ul>
+            <div id="syncStatus" class="sync-status hidden"></div>
+            <h1>MedReminder</h1>
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('today')">Today</button>
+                <button class="tab" onclick="showTab('all')">All Medicines</button>
+            </div>
+            <div id="today-tab">
+                <div class="card">
+                    <h2>Add Medicine Reminder</h2>
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input type="text" id="medName" placeholder="e.g., Aspirin">
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" id="medDosage" placeholder="e.g., 1 tablet">
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" id="medTime">
+                    </div>
+                    <button onclick="addMedicine()">Add Medicine</button>
+                </div>
+                <div class="card">
+                    <h2>Today's Schedule</h2>
+                    <ul class="medicine-list" id="todayList">
+                        <li class="empty-state"><p>No medicines scheduled for today</p></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="all-tab" style="display: none;">
+                <div class="card">
+                    <h2>All Medicines</h2>
+                    <ul class="medicine-list" id="allList"></ul>
+                </div>
             </div>
         </div>
-        
-        <div id="all-tab" style="display: none;">
-            <div class="card">
-                <h2>All Medicines</h2>
-                <ul class="medicine-list" id="allList"></ul>
-            </div>
+
+        <div id="settingsModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
+            <h2>Settings</h2>
+            <p style="margin-bottom: 16px; color: #666;">Sync your medicines with Google Drive</p>
+            <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Connect Google Drive
+            </button>
+            <button id="syncToDriveBtn" class="btn-success hidden" onclick="syncToDrive()">Upload to Google Drive</button>
+            <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()">Download from Google Drive</button>
+            <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()">Disconnect Google</button>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e0e0e0;">
+            <button class="btn-danger" onclick="switchUser()">Switch User</button>
+            <button class="btn-secondary" onclick="closeSettings()" style="margin-top: 10px;">Close</button>
         </div>
     </div>
 
     <script>
-        let medicines = JSON.parse(localStorage.getItem('medicines')) || [];
-        let takenToday = JSON.parse(localStorage.getItem('takenToday')) || {};
+        const GOOGLE_CLIENT_ID = '349821944609-gguobung0alaapdnnu9oevqef9952muh.apps.googleusercontent.com';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+        const APP_FOLDER = 'MedReminder';
+        
+        let currentUser = null;
+        let tokenClient = null;
+        let accessToken = null;
 
-        function saveMedicines() {
-            localStorage.setItem('medicines', JSON.stringify(medicines));
+        function init() {
+            const savedUser = localStorage.getItem('medreminder_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            }
         }
 
-        function saveTakenToday() {
-            localStorage.setItem('takenToday', JSON.stringify(takenToday));
+        function createUser() {
+            const name = document.getElementById('userName').value.trim();
+            if (!name) { alert('Please enter your name'); return; }
+            currentUser = { id: 'local_' + Date.now(), name: name, isGoogle: false };
+            localStorage.setItem('medreminder_user', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            
+            if (currentUser.isGoogle) {
+                document.getElementById('googleSignInBtn').classList.add('hidden');
+                document.getElementById('syncToDriveBtn').classList.remove('hidden');
+                document.getElementById('syncFromDriveBtn').classList.remove('hidden');
+                document.getElementById('googleSignOutBtn').classList.remove('hidden');
+            }
+            renderLists();
+        }
+
+        function showSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+
+        function switchUser() {
+            if (confirm('Switch to a different user? Your local data will be kept.')) {
+                localStorage.removeItem('medreminder_user');
+                currentUser = null;
+                document.getElementById('appScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('userName').value = '';
+                closeSettings();
+            }
+        }
+
+        function getUserStorageKey() { return `medreminder_data_${currentUser.id}`; }
+
+        let medicines = [];
+        let takenToday = {};
+
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem(getUserStorageKey())) || {};
+            medicines = data.medicines || [];
+            takenToday = data.takenToday || {};
+        }
+
+        function saveData() {
+            localStorage.setItem(getUserStorageKey(), JSON.stringify({ medicines, takenToday }));
+            showSyncStatus('Saved: ' + new Date().toLocaleTimeString(), 'pending');
+        }
+
+        function showSyncStatus(message, type = 'synced') {
+            const el = document.getElementById('syncStatus');
+            el.textContent = message;
+            el.className = 'sync-status ' + type;
+            el.classList.remove('hidden');
         }
 
         function addMedicine() {
             const name = document.getElementById('medName').value.trim();
             const dosage = document.getElementById('medDosage').value.trim();
             const time = document.getElementById('medTime').value;
-
-            if (!name || !dosage || !time) {
-                alert('Please fill in all fields');
-                return;
-            }
-                return;
- medicine = {
-                id: Date.now(),
-                name,
-                dosage,
-                time
-            };
-
-            medicines.push(medicine);
+            if (!name || !dosage || !time) { alert('Please fill in all fields'); return; }
+            medicines.push({ id: Date.now(), name, dosage, time });
             medicines.sort((a, b) => a.time.localeCompare(b.time));
-            saveMedicines();
-
+            saveData();
             document.getElementById('medName').value = '';
             document.getElementById('medDosage').value = '';
             document.getElementById('medTime').value = '';
-
             renderLists();
         }
 
-        function deleteMedicine(id) {
-            medicines = medicines.filter(m => m.id !== id);
-            saveMedicines();
-            renderLists();
-        }
+        function deleteMedicine(id) { medicines = medicines.filter(m => m.id !== id); saveData(); renderLists(); }
 
         function markAsTaken(id) {
             const today = new Date().toISOString().split('T')[0];
             takenToday[today] = takenToday[today] || [];
-            if (!takenToday[today].includes(id)) {
-                takenToday[today].push(id);
-                saveTakenToday();
-            }
+            if (!takenToday[today].includes(id)) { takenToday[today].push(id); saveData(); }
             renderLists();
         }
 
         function markAsNotTaken(id) {
             const today = new Date().toISOString().split('T')[0];
-            if (takenToday[today]) {
-                takenToday[today] = takenToday[today].filter(mid => mid !== id);
-                saveTakenToday();
-            }
+            if (takenToday[today]) { takenToday[today] = takenToday[today].filter(mid => mid !== id); saveData(); }
             renderLists();
         }
 
         function renderLists() {
+            loadData();
             const today = new Date().toISOString().split('T')[0];
             const todayTaken = takenToday[today] || [];
-            
-            const todayMedicines = medicines.filter(m => {
-                const medTime = m.time;
-                const now = new Date();
-                const currentTime = now.toTimeString().slice(0, 5);
-                return medTime <= currentTime;
-            });
+            const now = new Date();
+            const currentTime = now.toTimeString().slice(0, 5);
+            const todayMedicines = medicines.filter(m => m.time <= currentTime);
 
-            const allList = document.getElementById('allList');
-            const todayList = document.getElementById('todayList');
-
-            if (medicines.length === 0) {
-                allList.innerHTML = '<li class="empty-state"><p>No medicines added yet</p></li>';
-            } else {
-                allList.innerHTML = medicines.map(med => {
+            const render = (list) => {
+                if (list.length === 0) return '<li class="empty-state"><p>No medicines added yet</p></li>';
+                return list.map(med => {
                     const isTaken = todayTaken.includes(med.id);
-                    return `
-                        <li class="medicine-item ${isTaken ? 'taken' : ''}">
-                            <div class="medicine-info">
-                                <div class="medicine-name">
-                                    ${med.name}
-                                    <span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">
-                                        ${isTaken ? '✓ Taken' : '○ Pending'}
-                                    </span>
-                                </div>
-                                <div class="medicine-dosage">${med.dosage}</div>
-                                <div class="medicine-time">⏰ ${formatTime(med.time)}</div>
-                            </div>
-                            <div class="btn-group" style="flex-direction: column;">
-                                ${isTaken 
-                                    ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>`
-                                    : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`
-                                }
-                                <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
-                            </div>
-                        </li>
-                    `;
+                    return `<li class="medicine-item ${isTaken ? 'taken' : ''}">
+                        <div class="medicine-info">
+                            <div class="medicine-name">${med.name}<span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">${isTaken ? 'Taken' : 'Pending'}</span></div>
+                            <div class="medicine-dosage">${med.dosage}</div>
+                            <div class="medicine-time">${formatTime(med.time)}</div>
+                        </div>
+                        <div class="btn-group" style="flex-direction: column;">
+                            ${isTaken ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>` : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`}
+                            <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                        </div>
+                    </li>`;
                 }).join('');
-            }
+            };
 
-            if (todayMedicines.length === 0) {
-                todayList.innerHTML = `
-                    <li class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                        </svg>
-                        <p>No medicines due today</p>
-                    </li>
-                `;
-            } else {
-                todayList.innerHTML = todayMedicines.map(med => {
-                    const isTaken = todayTaken.includes(med.id);
-                    return `
-                        <li class="medicine-item ${isTaken ? 'taken' : ''}">
-                            <div class="medicine-info">
-                                <div class="medicine-name">
-                                    ${med.name}
-                                    <span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">
-                                        ${isTaken ? '✓ Taken' : '○ Pending'}
-                                    </span>
-                                </div>
-                                <div class="medicine-dosage">${med.dosage}</div>
-                                <div class="medicine-time">⏰ ${formatTime(med.time)}</div>
-                            </div>
-                            <div class="btn-group" style="flex-direction: column;">
-                                ${isTaken 
-                                    ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>`
-                                    : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`
-                                }
-                                <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
-                            </div>
-                        </li>
-                    `;
-                }).join('');
-            }
+            document.getElementById('allList').innerHTML = render(medicines);
+            document.getElementById('todayList').innerHTML = render(todayMedicines);
         }
 
         function formatTime(time) {
-            const [hours, minutes] = time.split(':');
-            const h = parseInt(hours);
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            const h12 = h % 12 || 12;
-            return `${h12}:${minutes} ${ampm}`;
+            const [h, m] = time.split(':');
+            const hour = parseInt(h);
+            return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
         }
 
         function showTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
+            document.getElementById('today-tab').style.display = tab === 'today' ? 'block' : 'none';
+            document.getElementById('all-tab').style.display = tab === 'all' ? 'block' : 'none';
+        }
+
+        function initGoogleSync() {
+            if (!GOOGLE_CLIENT_ID) {
+                alert('Google Client ID not configured');
+                return;
+            }
             
-            if (tab === 'today') {
-                document.getElementById('today-tab').style.display = 'block';
-                document.getElementById('all-tab').style.display = 'none';
-            } else {
-                document.getElementById('today-tab').style.display = 'none';
-                document.getElementById('all-tab').style.display = 'block';
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: SCOPES,
+                callback: (response) => {
+                    if (response.access_token) {
+                        accessToken = response.access_token;
+                        google.accounts.oauth2.initTokenClient({
+                            client_id: GOOGLE_CLIENT_ID,
+                            scope: 'email profile',
+                            callback: (profileResponse) => {
+                                currentUser = {
+                                    id: 'google_' + profileResponse.email,
+                                    name: profileResponse.name,
+                                    email: profileResponse.email,
+                                    isGoogle: true,
+                                    accessToken: accessToken
+                                };
+                                localStorage.setItem('medreminder_user', JSON.stringify(currentUser));
+                                showApp();
+                                closeSettings();
+                                showSyncStatus('Connected to Google Drive!', 'synced');
+                            }
+                        }).requestAccessToken({ prompt: 'consent' });
+                    }
+                }
+            });
+            
+            tokenClient.requestAccessToken({ prompt: 'consent' });
+        }
+
+        async function syncToDrive() {
+            if (!currentUser.isGoogle || !accessToken) {
+                alert('Please connect Google Drive first');
+                return;
+            }
+            
+            try {
+                const data = JSON.stringify({ medicines, takenToday });
+                
+                const searchResponse = await fetch('https://www.googleapis.com/drive/v3/files?q=name="medreminder_backup.json"', {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                
+                const searchResult = await searchResponse.json();
+                let fileId = null;
+                
+                if (searchResult.files && searchResult.files.length > 0) {
+                    fileId = searchResult.files[0].id;
+                    await fetch('https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media', {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': 'Bearer ' + accessToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: data
+                    });
+                } else {
+                    const metadata = {
+                        name: 'medreminder_backup.json',
+                        mimeType: 'application/json'
+                    };
+                    
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', new Blob([data], { type: 'application/json' }));
+                    
+                    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + accessToken },
+                        body: form
+                    });
+                }
+                
+                showSyncStatus('Uploaded to Google Drive!', 'synced');
+            } catch (error) {
+                console.error('Sync error:', error);
+                showSyncStatus('Upload failed: ' + error.message, 'pending');
             }
         }
 
-        renderLists();
+        async function syncFromDrive() {
+            if (!currentUser.isGoogle || !accessToken) {
+                alert('Please connect Google Drive first');
+                return;
+            }
+            
+            try {
+                const searchResponse = await fetch('https://www.googleapis.com/drive/v3/files?q=name="medreminder_backup.json"', {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                
+                const searchResult = await searchResponse.json();
+                
+                if (!searchResult.files || searchResult.files.length === 0) {
+                    alert('No backup found on Google Drive');
+                    return;
+                }
+                
+                const fileId = searchResult.files[0].id;
+                
+                const fileResponse = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                
+                const data = await fileResponse.json();
+                
+                medicines = data.medicines || [];
+                takenToday = data.takenToday || {};
+                
+                saveData();
+                renderLists();
+                
+                showSyncStatus('Loaded from Google Drive!', 'synced');
+            } catch (error) {
+                console.error('Sync error:', error);
+                showSyncStatus('Download failed: ' + error.message, 'pending');
+            }
+        }
+
+        function signOutGoogle() {
+            try {
+                google.accounts.id.disableAutoSelect();
+            } catch (e) {}
+            
+            accessToken = null;
+            currentUser.isGoogle = false;
+            delete currentUser.accessToken;
+            localStorage.setItem('medreminder_user', JSON.stringify(currentUser));
+            
+            document.getElementById('googleSignInBtn').classList.remove('hidden');
+            document.getElementById('syncToDriveBtn').classList.add('hidden');
+            document.getElementById('syncFromDriveBtn').classList.add('hidden');
+            document.getElementById('googleSignOutBtn').classList.add('hidden');
+            
+            showSyncStatus('Google disconnected', 'pending');
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
