@@ -34,8 +34,8 @@
 3. Application type: "Web application"
 4. Name: MedReminder
 5. Add "Authorized JavaScript origins":
-   - `http://localhost` (for local testing)
-   - `file://` (for file:// URLs)
+   - `http://localhost:8080` (for local testing)
+   - `http://127.0.0.1:8080` (alternative localhost)
 6. Click "CREATE"
 7. Copy the "Client ID"
 

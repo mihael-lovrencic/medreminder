@@ -11,9 +11,20 @@ A simple medicine tracking web app that helps you remember which medicines you'v
 - Google Drive sync (requires Google Client ID setup)
 - Responsive design works on mobile and desktop
 
-## Getting Started
+## Running the App
 
-Simply open `index.html` in a web browser.
+### Option 1: Local Server (Recommended for Google Sync)
+
+```bash
+npm install
+npm start
+```
+
+Then open http://localhost:8080 in your browser.
+
+### Option 2: Direct File Open
+
+Open `index.html` directly in your browser. Note: Google Drive sync won't work with this method.
 
 ### Running Tests
 
