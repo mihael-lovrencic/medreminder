@@ -275,3 +275,53 @@ button:hover {
     color: #666;
     margin-bottom: 30px;
 }
+
+.patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.patient-item:hover {
+    background: #f0f1f2;
+}
+
+.patient-item.active {
+    background: #e8eaff;
+    border: 2px solid #667eea;
+}
+
+.patient-info {
+    flex: 1;
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.patient-room {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.medicine-notes {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.patient-item .btn-delete {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+}

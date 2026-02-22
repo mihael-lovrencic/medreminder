@@ -11,11 +11,11 @@
     <div class="container">
         <div id="loginScreen" class="card login-screen">
             <h2>Welcome to MedReminder</h2>
-            <p>Track your medicines and sync across devices</p>
+            <p>Track medicines for multiple patients</p>
             <div class="form-group">
-                <input type="text" id="userName" placeholder="Enter your name">
+                <input type="text" id="userName" placeholder="Enter your name (nurse/caregiver)">
             </div>
-            <button onclick="createUser()">Continue as Local User</button>
+            <button onclick="createUser()">Continue</button>
             <button class="btn-google" onclick="initGoogleSync()">
                 <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Sign in with Google
@@ -31,7 +31,20 @@
                 <button class="btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showSettings()">Settings</button>
             </div>
             <div id="syncStatus" class="sync-status hidden"></div>
-            <h1>MedReminder</h1>
+            
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="margin-bottom: 4px;">Current Patient</h2>
+                        <div id="currentPatientName" style="font-weight: 600; color: #667eea;">-</div>
+                    </div>
+                    <button onclick="showPatientModal()" style="width: auto; padding: 8px 16px;">+ Add Patient</button>
+                </div>
+                <select id="patientSelector" onchange="onPatientChange(event)" style="padding: 10px;">
+                </select>
+            </div>
+
+            <h1>💊 MedReminder</h1>
             <div class="tabs">
                 <button class="tab active" onclick="showTab('today')">Today</button>
                 <button class="tab" onclick="showTab('all')">All Medicines</button>
@@ -51,6 +64,10 @@
                         <label>Time</label>
                         <input type="time" id="medTime">
                     </div>
+                    <div class="form-group">
+                        <label>Notes (optional)</label>
+                        <input type="text" id="medNotes" placeholder="e.g., Take with food">
+                    </div>
                     <button onclick="addMedicine()">Add Medicine</button>
                 </div>
                 <div class="card">
@@ -66,11 +83,32 @@
                     <ul class="medicine-list" id="allList"></ul>
                 </div>
             </div>
+            
+            <div class="card">
+                <h2>All Patients</h2>
+                <ul class="medicine-list" id="patientList" style="background: transparent; padding: 0;">
+                </ul>
+            </div>
+        </div>
+
+        <div id="patientModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
+            <h2 id="patientModalTitle">Add Patient</h2>
+            <div class="form-group">
+                <label>Patient Name</label>
+                <input type="text" id="patientName" placeholder="e.g., John Doe">
+            </div>
+            <div class="form-group">
+                <label>Room Number (optional)</label>
+                <input type="text" id="patientRoom" placeholder="e.g., Room 101">
+            </div>
+            <button id="savePatientBtn" onclick="addPatient()">Save Patient</button>
+            <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()">Delete Patient</button>
+            <button class="btn-secondary" onclick="closePatientModal()" style="margin-top: 10px;">Cancel</button>
         </div>
 
         <div id="settingsModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
             <h2>Settings</h2>
-            <p style="margin-bottom: 16px; color: #666;">Sync your medicines with Google Drive</p>
+            <p style="margin-bottom: 16px; color: #666;">Sync your data with Google Drive</p>
             <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
                 <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Connect Google Drive
