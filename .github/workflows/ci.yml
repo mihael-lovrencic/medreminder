@@ -31,7 +31,7 @@ jobs:
           cp -r js www/
 
       - name: Run tests
-        run: npx playwright test --reporter=github-actions
+        run: npx playwright test --reporter=list
 
       - name: Upload test results
         if: failure()
