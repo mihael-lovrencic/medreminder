@@ -3,6 +3,12 @@ name: Build Android APK & Release
 on:
   push:
     branches: [main]
+    paths:
+      - '**.js'
+      - '**.html'
+      - '**.css'
+      - 'package.json'
+      - 'package-lock.json'
   workflow_dispatch:
 
 jobs:
