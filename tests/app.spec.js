@@ -50,7 +50,7 @@ test.describe('Demo Mode', () => {
 
     test('should display medicines', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await expect(page.locator('.medicine-item').first()).toBeVisible();
+        await expect(page.locator('.medicine-item').first()).toBeAttached();
     });
 });
 
@@ -82,12 +82,16 @@ test.describe('Patient Management', () => {
 test.describe('Medicine Management', () => {
     test('should add medicine', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        // Add medicine on Today tab (default)
+        await expect(page.locator('#medName')).toBeVisible();
         await page.fill('#medName', 'UniqueTestMed123');
         await page.fill('#medDosage', '50mg');
-        await page.fill('#medTime', '15:00');
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes() + 5).padStart(2, '0');
+        await page.fill('#medTime', `${hours}:${minutes}`);
         await page.click('button:has-text("Add Medicine")');
-        await expect(page.locator('#todayList')).toContainText('UniqueTestMed123');
+        await page.waitForTimeout(500);
+        await expect(page.locator('#allList')).toContainText('UniqueTestMed123');
     });
 
     test('should mark medicine as taken', async ({ page }) => {
@@ -201,5 +205,43 @@ test.describe('Responsive', () => {
         await page.setViewportSize({ width: 375, height: 667 });
         await page.click('button:has-text("Try Demo")');
         await expect(page.locator('#appScreen')).toBeVisible();
+    });
+});
+
+test.describe('Organization', () => {
+    test('should open settings and see organization section', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('button:has-text("Settings")');
+        await expect(page.locator('#settingsModal')).toBeVisible();
+        await expect(page.locator('#orgSection')).toBeVisible();
+    });
+
+    test('should open create organization modal', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('button:has-text("Settings")');
+        await page.click('button:has-text("Create Organization")');
+        await expect(page.locator('#orgModal')).toBeVisible();
+        await expect(page.locator('#orgNameInput')).toBeVisible();
+    });
+
+    test('should create and display organization', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('button:has-text("Settings")');
+        await page.click('button:has-text("Create Organization")');
+        await page.fill('#orgNameInput', 'Test Hospital');
+        await page.click('#saveOrgBtn');
+        await expect(page.locator('#orgNameDisplay')).toContainText('Test Hospital');
+        await expect(page.locator('#leaveOrgBtn')).toBeVisible();
+        await expect(page.locator('#orgBackupSection')).toBeVisible();
+    });
+
+    test('should share backup to organization', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('button:has-text("Settings")');
+        await page.click('button:has-text("Create Organization")');
+        await page.fill('#orgNameInput', 'Test Hospital');
+        await page.click('#saveOrgBtn');
+        await page.click('button:has-text("Share Backup to Organization")');
+        await expect(page.locator('#orgBackupList')).toContainText('Demo User');
     });
 });

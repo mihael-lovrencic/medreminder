@@ -409,3 +409,34 @@ button:hover {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
 }
+
+.hidden {
+    display: none !important;
+}
+
+.org-section {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.org-code {
+    font-family: monospace;
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.backup-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.backup-item {
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}

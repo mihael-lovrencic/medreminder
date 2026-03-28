@@ -4,11 +4,14 @@
   "description": "Medicine reminder app with Google Drive sync",
   "scripts": {
     "start": "http-server -p 8080 -c-1",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:unit": "jest",
+    "test:all": "npm run test:unit && npm run test"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "jest": "^30.3.0"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",
