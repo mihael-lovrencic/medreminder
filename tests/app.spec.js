@@ -167,13 +167,14 @@ test.describe('Data Persistence', () => {
 });
 
 test.describe('Stock Management', () => {
-    test.skip('should show stock warning for low stock medicines', async ({ page }) => {
+    test('should show stock warning for low stock medicines', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
         await page.waitForTimeout(500);
         await page.selectOption('#patientSelector', { index: 1 });
         await page.waitForTimeout(500);
         const warningStyle = await page.locator('#stockWarning').getAttribute('style');
         expect(warningStyle).not.toContain('display: none');
+        await expect(page.locator('#stockWarning')).toBeVisible();
     });
 
     test('should decrement stock when marking medicine as taken', async ({ page }) => {
