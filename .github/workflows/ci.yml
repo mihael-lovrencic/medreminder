@@ -31,4 +31,4 @@ jobs:
           cp -r js www/
 
       - name: Run tests
-        run: npx playwright test --reporter=list || true
+        run: npx playwright test --reporter=list --timeout=30000
