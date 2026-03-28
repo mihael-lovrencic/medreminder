@@ -63,6 +63,25 @@ window.translations = {
         medicines: 'lijekova',
         pillsLeft: 'tableta preostalo',
         orderNow: 'NARUČI ODMAH!',
-        lowStockWarning: 'Upozorenje - niske zalihe'
+        lowStockWarning: 'Upozorenje - niske zalihe',
+        organization: 'Organizacija',
+        createOrganization: 'Kreiraj organizaciju',
+        joinOrganization: 'Pridruži se organizaciji',
+        leaveOrganization: 'Napusti organizaciju',
+        orgName: 'Naziv organizacije',
+        orgCode: 'Kod organizacije',
+        orgNotFound: 'Organizacija nije pronađena. Provjerite kod i pokušajte ponovo.',
+        alreadyMember: 'Već ste član ove organizacije.',
+        confirmLeaveOrg: 'Jeste li sigurni da želite napustiti ovu organizaciju?',
+        noOrg: 'Morate biti dio organizacije.',
+        backup: 'Backup i sinkronizacija',
+        shareBackupOrg: 'Podijeli backup organizaciji',
+        loadBackupOrg: 'Učitaj backup od organizacije',
+        noBackups: 'Nema dostupnih backupova u ovoj organizaciji.',
+        confirmLoadBackup: 'Učitaj backup od',
+        confirmOverwrite: 'Ovo će zamijeniti vaše trenutne podatke.',
+        pleaseEnterCode: 'Molimo unesite kod organizacije',
+        create: 'Kreiraj',
+        join: 'Pridruži se'
     }
 };

@@ -63,6 +63,25 @@ window.translations = {
         medicines: 'Medikamente',
         pillsLeft: 'Tabletten übrig',
         orderNow: 'JETZT BESTELLEN!',
-        lowStockWarning: 'Niedriger Bestand Warnung'
+        lowStockWarning: 'Niedriger Bestand Warnung',
+        organization: 'Organisation',
+        createOrganization: 'Organisation erstellen',
+        joinOrganization: 'Organisation beitreten',
+        leaveOrganization: 'Organisation verlassen',
+        orgName: 'Organisationsname',
+        orgCode: 'Organisationscode',
+        orgNotFound: 'Organisation nicht gefunden. Überprüfen Sie den Code und versuchen Sie es erneut.',
+        alreadyMember: 'Sie sind bereits Mitglied dieser Organisation.',
+        confirmLeaveOrg: 'Sind Sie sicher, dass Sie diese Organisation verlassen möchten?',
+        noOrg: 'Sie müssen Teil einer Organisation sein.',
+        backup: 'Backup und Synchronisierung',
+        shareBackupOrg: 'Backup mit Organisation teilen',
+        loadBackupOrg: 'Backup von Organisation laden',
+        noBackups: 'Keine Backups in dieser Organisation verfügbar.',
+        confirmLoadBackup: 'Backup laden von',
+        confirmOverwrite: 'Dies ersetzt Ihre aktuellen Daten.',
+        pleaseEnterCode: 'Bitte geben Sie den Organisationscode ein',
+        create: 'Erstellen',
+        join: 'Beitreten'
     }
 };
