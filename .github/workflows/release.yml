@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
 
@@ -23,18 +23,18 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install npm dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
       - name: Initialize Capacitor
         run: npx cap init MedReminder com.medreminder.app --web-dir=www
 
-      - name: Add Capacitor Android
+      - name: Add Android platform
         run: |
-          npm install @capacitor/android
           rm -rf android
           npx cap add android
 
@@ -48,30 +48,23 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Build debug APK
+      - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs="-Xmx2048m" 2>&1 || cat build/outputs/logs/*.log 2>/dev/null || true
+          ./gradlew assembleDebug --no-daemon
 
-      - name: Find APK
-        id: find-apk
-        run: echo "apk_path=$(find . -name '*.apk' -type f | head -1)" >> $GITHUB_OUTPUT
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MedReminder-debug
-          path: ${{ steps.find-apk.outputs.apk_path }}
+          name: medreminder-apk
+          path: android/app/build/outputs/apk/debug/*.apk
 
   release:
     needs: build
@@ -84,12 +77,8 @@ jobs:
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
-          name: MedReminder-debug
+          name: medreminder-apk
           path: ./apk
-
-      - name: Get APK filename
-        id: apk-file
-        run: echo "filename=$(ls ./apk/*.apk | xargs basename)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
