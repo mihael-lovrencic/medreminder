@@ -39,6 +39,245 @@ let takenToday = {};
 let currentPatientId = null;
 let customMedicines = [];
 let editingPatientId = null;
+let currentOrganization = null;
+
+function generateOrgCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+function loadOrganization() {
+    if (!currentUser) return;
+    const orgData = localStorage.getItem(`medreminder_org_${currentUser.id}`);
+    if (orgData) {
+        currentOrganization = JSON.parse(orgData);
+        updateOrgUI();
+    }
+}
+
+function saveOrganizationData() {
+    if (!currentUser || !currentOrganization) return;
+    localStorage.setItem(`medreminder_org_${currentUser.id}`, JSON.stringify(currentOrganization));
+    const orgListKey = `medreminder_orgs_${currentOrganization.code}`;
+    localStorage.setItem(orgListKey, JSON.stringify(currentOrganization));
+}
+
+function updateOrgUI() {
+    const orgInfo = document.getElementById('orgInfo');
+    const createBtn = document.getElementById('createOrgBtn');
+    const joinBtn = document.getElementById('joinOrgBtn');
+    const leaveBtn = document.getElementById('leaveOrgBtn');
+    const backupSection = document.getElementById('orgBackupSection');
+    
+    if (currentOrganization) {
+        orgInfo.classList.remove('hidden');
+        document.getElementById('orgNameDisplay').textContent = currentOrganization.name;
+        document.getElementById('orgMemberCount').textContent = `${currentOrganization.members.length} member(s) | Code: ${currentOrganization.code}`;
+        createBtn.classList.add('hidden');
+        joinBtn.classList.add('hidden');
+        leaveBtn.classList.remove('hidden');
+        backupSection.classList.remove('hidden');
+        renderOrgBackupList();
+    } else {
+        orgInfo.classList.add('hidden');
+        createBtn.classList.remove('hidden');
+        joinBtn.classList.remove('hidden');
+        leaveBtn.classList.add('hidden');
+        backupSection.classList.add('hidden');
+    }
+}
+
+function showCreateOrgModal() {
+    document.getElementById('orgModal').classList.remove('hidden');
+    document.getElementById('orgModalTitle').textContent = t('createOrganization') || 'Create Organization';
+    document.getElementById('orgNameInput').value = '';
+}
+
+function closeOrgModal() {
+    document.getElementById('orgModal').classList.add('hidden');
+}
+
+function saveOrganization() {
+    const name = document.getElementById('orgNameInput').value.trim();
+    if (!name) {
+        alert(t('pleaseFillFields') || 'Please enter organization name');
+        return;
+    }
+    
+    currentOrganization = {
+        id: 'org_' + Date.now(),
+        name: name,
+        code: generateOrgCode(),
+        createdBy: currentUser.id,
+        createdAt: new Date().toISOString(),
+        members: [{
+            userId: currentUser.id,
+            userName: currentUser.name,
+            role: 'admin',
+            joinedAt: new Date().toISOString()
+        }],
+        backups: []
+    };
+    
+    saveOrganizationData();
+    closeOrgModal();
+    updateOrgUI();
+    showSyncStatus('Organization created: ' + name, 'success');
+}
+
+function showJoinOrgModal() {
+    document.getElementById('joinOrgModal').classList.remove('hidden');
+    document.getElementById('orgCodeInput').value = '';
+}
+
+function closeJoinOrgModal() {
+    document.getElementById('joinOrgModal').classList.add('hidden');
+}
+
+function joinOrganization() {
+    const code = document.getElementById('orgCodeInput').value.trim().toUpperCase();
+    if (!code) {
+        alert(t('pleaseEnterCode') || 'Please enter organization code');
+        return;
+    }
+    
+    let foundOrg = null;
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('medreminder_orgs_')) {
+            const org = JSON.parse(localStorage.getItem(key));
+            if (org.code === code) {
+                foundOrg = org;
+                break;
+            }
+        }
+    }
+    
+    if (!foundOrg) {
+        alert(t('orgNotFound') || 'Organization not found. Check the code and try again.');
+        return;
+    }
+    
+    const alreadyMember = foundOrg.members.some(m => m.userId === currentUser.id);
+    if (alreadyMember) {
+        alert(t('alreadyMember') || 'You are already a member of this organization.');
+        return;
+    }
+    
+    foundOrg.members.push({
+        userId: currentUser.id,
+        userName: currentUser.name,
+        role: 'member',
+        joinedAt: new Date().toISOString()
+    });
+    
+    localStorage.setItem(`medreminder_orgs_${code}`, JSON.stringify(foundOrg));
+    currentOrganization = foundOrg;
+    saveOrganizationData();
+    closeJoinOrgModal();
+    updateOrgUI();
+    showSyncStatus('Joined organization: ' + foundOrg.name, 'success');
+}
+
+function leaveOrganization() {
+    if (!currentOrganization) return;
+    
+    const confirmed = confirm(t('confirmLeaveOrg') || 'Are you sure you want to leave this organization?');
+    if (!confirmed) return;
+    
+    currentOrganization.members = currentOrganization.members.filter(m => m.userId !== currentUser.id);
+    
+    if (currentOrganization.members.length === 0) {
+        localStorage.removeItem(`medreminder_orgs_${currentOrganization.code}`);
+    } else {
+        localStorage.setItem(`medreminder_orgs_${currentOrganization.code}`, JSON.stringify(currentOrganization));
+    }
+    
+    currentOrganization = null;
+    localStorage.removeItem(`medreminder_org_${currentUser.id}`);
+    updateOrgUI();
+    showSyncStatus('Left organization', 'success');
+}
+
+function shareBackupToOrg() {
+    if (!currentOrganization) {
+        alert(t('noOrg') || 'You must be part of an organization first.');
+        return;
+    }
+    
+    const backupData = {
+        id: 'backup_' + Date.now(),
+        sharedBy: currentUser.id,
+        sharedByName: currentUser.name,
+        sharedAt: new Date().toISOString(),
+        patients: patients,
+        patientData: {}
+    };
+    
+    patients.forEach(p => {
+        const key = `medreminder_data_${currentUser.id}_${p.id}`;
+        const data = localStorage.getItem(key);
+        if (data) {
+            backupData.patientData[p.id] = JSON.parse(data);
+        }
+    });
+    
+    currentOrganization.backups.push(backupData);
+    saveOrganizationData();
+    renderOrgBackupList();
+    showSyncStatus('Backup shared to organization', 'success');
+}
+
+function loadBackupFromOrg() {
+    if (!currentOrganization || currentOrganization.backups.length === 0) {
+        alert(t('noBackups') || 'No backups available in this organization.');
+        return;
+    }
+    
+    const latestBackup = currentOrganization.backups[currentOrganization.backups.length - 1];
+    
+    const confirmed = confirm(`${t('confirmLoadBackup') || 'Load backup from'} ${latestBackup.sharedByName} (${new Date(latestBackup.sharedAt).toLocaleDateString()})?\n${t('confirmOverwrite') || 'This will replace your current data.'}`);
+    
+    if (!confirmed) return;
+    
+    patients = latestBackup.patients || [];
+    savePatients();
+    
+    Object.keys(latestBackup.patientData || {}).forEach(patientId => {
+        const key = `medreminder_data_${currentUser.id}_${patientId}`;
+        localStorage.setItem(key, JSON.stringify(latestBackup.patientData[patientId]));
+    });
+    
+    if (patients.length > 0) {
+        currentPatientId = patients[0].id;
+        loadPatientData(currentPatientId);
+    }
+    
+    renderPatientList();
+    renderLists();
+    showSyncStatus('Backup loaded from organization', 'success');
+}
+
+function renderOrgBackupList() {
+    const container = document.getElementById('orgBackupList');
+    if (!currentOrganization || currentOrganization.backups.length === 0) {
+        container.innerHTML = '<p style="color: #666; font-size: 0.85rem;">No backups shared yet</p>';
+        return;
+    }
+    
+    const backups = currentOrganization.backups.slice(-5).reverse();
+    container.innerHTML = backups.map(b => `
+        <div style="padding: 8px; background: #f5f5f5; border-radius: 4px; margin-bottom: 5px; font-size: 0.85rem;">
+            <strong>${b.sharedByName}</strong><br>
+            <span style="color: #666;">${new Date(b.sharedAt).toLocaleDateString()} ${new Date(b.sharedAt).toLocaleTimeString()}</span>
+            <span style="color: #888; font-size: 0.75rem; display: block;">${b.patients?.length || 0} patients</span>
+        </div>
+    `).join('');
+}
 
 function init() {
     const savedUser = localStorage.getItem('medreminder_user');
@@ -49,6 +288,7 @@ function init() {
         }
         loadPatients();
         loadCustomMedicines();
+        loadOrganization();
         showApp();
         setupMedicineDropdown();
     }

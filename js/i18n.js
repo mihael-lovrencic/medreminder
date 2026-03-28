@@ -66,7 +66,26 @@ const defaultTranslations = {
         medicines: 'medicines',
         pillsLeft: 'pills left',
         orderNow: 'ORDER NOW!',
-        lowStockWarning: 'Low Stock Warning'
+        lowStockWarning: 'Low Stock Warning',
+        organization: 'Organization',
+        createOrganization: 'Create Organization',
+        joinOrganization: 'Join Organization',
+        leaveOrganization: 'Leave Organization',
+        orgName: 'Organization Name',
+        orgCode: 'Organization Code',
+        orgNotFound: 'Organization not found. Check the code and try again.',
+        alreadyMember: 'You are already a member of this organization.',
+        confirmLeaveOrg: 'Are you sure you want to leave this organization?',
+        noOrg: 'You must be part of an organization first.',
+        backup: 'Backup & Sync',
+        shareBackupOrg: 'Share Backup to Organization',
+        loadBackupOrg: 'Load Backup from Organization',
+        noBackups: 'No backups available in this organization.',
+        confirmLoadBackup: 'Load backup from',
+        confirmOverwrite: 'This will replace your current data.',
+        pleaseEnterCode: 'Please enter organization code',
+        create: 'Create',
+        join: 'Join'
     }
 };
 
