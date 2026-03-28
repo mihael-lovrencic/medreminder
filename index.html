@@ -38,11 +38,17 @@
                     <div>
                         <h2 style="margin-bottom: 4px;" data-i18n="currentPatient">Current Patient</h2>
                         <div id="currentPatientName" style="font-weight: 600; color: #667eea;">-</div>
+                        <div id="medicineCount" style="font-size: 0.85rem; color: #666; margin-top: 4px;"></div>
                     </div>
                     <button onclick="showPatientModal()" style="width: auto; padding: 8px 16px;" data-i18n="addPatient">+ Add Patient</button>
                 </div>
                 <select id="patientSelector" onchange="onPatientChange(event)" style="padding: 10px;">
                 </select>
+            </div>
+            
+            <div id="stockWarning" class="card" style="background: #fef3c7; display: none;">
+                <h3 style="color: #92400e; margin-bottom: 8px;">📦 Low Stock Warning</h3>
+                <div id="lowStockList"></div>
             </div>
 
             <h1>💊 MedReminder</h1>
@@ -71,6 +77,11 @@
                     <div class="form-group">
                         <label data-i18n="notes">Notes (optional)</label>
                         <input type="text" id="medNotes" data-i18n-placeholder="notesPlaceholder" placeholder="e.g., Take with food">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="stockQuantity">Stock Quantity (pills)</label>
+                        <input type="number" id="medStock" placeholder="e.g., 30" min="0" style="width: 50%;">
+                        <small style="color: #888; font-size: 0.8rem;" data-i18n="stockHint">Leave empty if tracking not needed</small>
                     </div>
                     <button onclick="addMedicine()" data-i18n="addMedicine">Add Medicine</button>
                 </div>

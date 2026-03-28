@@ -57,6 +57,12 @@ window.translations = {
         switchUserConfirm: 'Zu einem anderen Benutzer wechseln? Alle Daten werden gelöscht.',
         language: 'Sprache',
         noRoom: 'Kein Zimmer',
-        editPatient: 'Patient bearbeiten'
+        editPatient: 'Patient bearbeiten',
+        stockQuantity: 'Bestand (Tabletten)',
+        stockHint: 'Leer lassen wenn nicht benötigt',
+        medicines: 'Medikamente',
+        pillsLeft: 'Tabletten übrig',
+        orderNow: 'JETZT BESTELLEN!',
+        lowStockWarning: 'Niedriger Bestand Warnung'
     }
 };

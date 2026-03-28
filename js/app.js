@@ -155,19 +155,19 @@ function startDemoMode() {
     
     const demoMedicines = {
         'p_demo_1': [
-            { id: 'm_1', name: 'Metformin', dosage: '500mg', time: '08:00', notes: 'With breakfast' },
-            { id: 'm_2', name: 'Lisinopril', dosage: '10mg', time: '08:00', notes: '' },
-            { id: 'm_3', name: 'Metformin', dosage: '500mg', time: '20:00', notes: 'With dinner' }
+            { id: 'm_1', name: 'Metformin', dosage: '500mg', time: '08:00', notes: 'With breakfast', stock: 25, dailyDoses: 1 },
+            { id: 'm_2', name: 'Lisinopril', dosage: '10mg', time: '08:00', notes: '', stock: 60, dailyDoses: 1 },
+            { id: 'm_3', name: 'Metformin', dosage: '500mg', time: '20:00', notes: 'With dinner', stock: 25, dailyDoses: 1 }
         ],
         'p_demo_2': [
-            { id: 'm_4', name: 'Omeprazole', dosage: '20mg', time: '07:00', notes: 'Before breakfast' },
-            { id: 'm_5', name: 'Amlodipine', dosage: '5mg', time: '12:00', notes: '' },
-            { id: 'm_6', name: 'Sertraline', dosage: '50mg', time: '21:00', notes: 'Before sleep' }
+            { id: 'm_4', name: 'Omeprazole', dosage: '20mg', time: '07:00', notes: 'Before breakfast', stock: 8, dailyDoses: 1 },
+            { id: 'm_5', name: 'Amlodipine', dosage: '5mg', time: '12:00', notes: '', stock: 45, dailyDoses: 1 },
+            { id: 'm_6', name: 'Sertraline', dosage: '50mg', time: '21:00', notes: 'Before sleep', stock: 3, dailyDoses: 1 }
         ],
         'p_demo_3': [
-            { id: 'm_7', name: 'Warfarin', dosage: '5mg', time: '09:00', notes: 'Same time daily' },
-            { id: 'm_8', name: 'Furosemide', dosage: '40mg', time: '09:00', notes: '' },
-            { id: 'm_9', name: 'Aspirin', dosage: '100mg', time: '21:00', notes: 'Before sleep' }
+            { id: 'm_7', name: 'Warfarin', dosage: '5mg', time: '09:00', notes: 'Same time daily', stock: 15, dailyDoses: 1 },
+            { id: 'm_8', name: 'Furosemide', dosage: '40mg', time: '09:00', notes: '', stock: 30, dailyDoses: 1 },
+            { id: 'm_9', name: 'Aspirin', dosage: '100mg', time: '21:00', notes: 'Before sleep', stock: 4, dailyDoses: 1 }
         ]
     };
     
@@ -241,6 +241,7 @@ function showApp() {
     } else if (patients.length > 0) {
         renderPatientSelector();
         renderLists();
+        checkLowStock();
     } else {
         showPatientModal();
     }
@@ -427,13 +428,15 @@ function addMedicine() {
     const dosage = document.getElementById('medDosage').value.trim();
     const time = document.getElementById('medTime').value;
     const notes = document.getElementById('medNotes').value.trim();
+    const stockInput = document.getElementById('medStock').value;
+    const stock = stockInput ? parseInt(stockInput) : null;
 
     if (!name || !dosage || !time) {
         alert(t('pleaseFillFields') || 'Please fill in name, dosage, and time');
         return;
     }
 
-    medicines.push({ id: 'm_' + Date.now(), name, dosage, time, notes });
+    medicines.push({ id: 'm_' + Date.now(), name, dosage, time, notes, stock, dailyDoses: stock ? 1 : null });
     medicines.sort((a, b) => a.time.localeCompare(b.time));
     savePatientData();
 
@@ -441,7 +444,9 @@ function addMedicine() {
     document.getElementById('medDosage').value = '';
     document.getElementById('medTime').value = '';
     document.getElementById('medNotes').value = '';
+    document.getElementById('medStock').value = '';
     renderLists();
+    checkLowStock();
 }
 
 function deleteMedicine(id) {
@@ -455,9 +460,16 @@ function markAsTaken(id) {
     takenToday[today] = takenToday[today] || [];
     if (!takenToday[today].includes(id)) {
         takenToday[today].push(id);
+        
+        const med = medicines.find(m => m.id === id);
+        if (med && med.stock !== null && med.stock > 0) {
+            med.stock = Math.max(0, med.stock - 1);
+        }
+        
         savePatientData();
     }
     renderLists();
+    checkLowStock();
 }
 
 function markAsNotTaken(id) {
@@ -469,12 +481,54 @@ function markAsNotTaken(id) {
     renderLists();
 }
 
+function updateMedicineCount() {
+    const countEl = document.getElementById('medicineCount');
+    if (medicines.length > 0) {
+        countEl.textContent = medicines.length + ' ' + (t('medicines') || 'medicines');
+    } else {
+        countEl.textContent = '';
+    }
+}
+
+function checkLowStock() {
+    const warningEl = document.getElementById('stockWarning');
+    const listEl = document.getElementById('lowStockList');
+    
+    if (!warningEl || !listEl) return;
+    
+    const lowStockMeds = medicines.filter(m => m.stock !== null && m.stock !== undefined && m.stock <= 10);
+    
+    if (lowStockMeds.length > 0) {
+        warningEl.style.display = 'block';
+        listEl.innerHTML = lowStockMeds.map(m => {
+            const isCritical = m.stock <= 5;
+            const color = isCritical ? '#dc2626' : '#d97706';
+            return `<div style="padding: 8px 0; border-bottom: 1px solid #fcd34d;">
+                <strong style="color: ${color};">${m.name}</strong> - ${m.stock} ${t('pillsLeft') || 'pills left'}
+                ${isCritical ? `<span style="color: #dc2626; font-weight: bold;"> ⚠️ ${t('orderNow') || 'ORDER NOW!'}</span>` : ''}
+            </div>`;
+        }).join('');
+    } else {
+        warningEl.style.display = 'none';
+    }
+}
+
 function renderLists() {
     const today = new Date().toISOString().split('T')[0];
     const todayTaken = takenToday[today] || [];
     const now = new Date();
     const currentTime = now.toTimeString().slice(0, 5);
     const todayMedicines = medicines.filter(m => m.time <= currentTime);
+
+    const getStockBadge = (med) => {
+        if (med.stock === null || med.stock === undefined) return '';
+        if (med.stock <= 5) {
+            return `<span class="stock-badge stock-critical">${med.stock} left</span>`;
+        } else if (med.stock <= 10) {
+            return `<span class="stock-badge stock-warning">${med.stock} left</span>`;
+        }
+        return `<span class="stock-badge stock-ok">${med.stock} in stock</span>`;
+    };
 
     const render = (list) => {
         if (list.length === 0) return '<li class="empty-state"><p>' + (t('noMedicinesAll') || 'No medicines added yet') + '</p></li>';
@@ -483,7 +537,7 @@ function renderLists() {
             return `<li class="medicine-item ${isTaken ? 'taken' : ''}">
                 <div class="medicine-info">
                     <div class="medicine-name">${med.name}<span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">${isTaken ? t('taken') : t('pending')}</span></div>
-                    <div class="medicine-dosage">${med.dosage}</div>
+                    <div class="medicine-dosage">${med.dosage} ${getStockBadge(med)}</div>
                     <div class="medicine-time">${formatTime(med.time)}</div>
                     ${med.notes ? `<div class="medicine-notes">${med.notes}</div>` : ''}
                 </div>
@@ -497,6 +551,9 @@ function renderLists() {
 
     document.getElementById('allList').innerHTML = render(medicines);
     document.getElementById('todayList').innerHTML = render(todayMedicines);
+    
+    updateMedicineCount();
+    checkLowStock();
 }
 
 function formatTime(time) {

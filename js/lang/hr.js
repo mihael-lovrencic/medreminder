@@ -57,6 +57,12 @@ window.translations = {
         switchUserConfirm: 'Prijeći na drugog korisnika? Svi podaci bit će izbrisani.',
         language: 'Jezik',
         noRoom: 'Nema sobe',
-        editPatient: 'Uredi pacijenta'
+        editPatient: 'Uredi pacijenta',
+        stockQuantity: 'Zalihe (tablete)',
+        stockHint: 'Ostavite prazno ako praćenje nije potrebno',
+        medicines: 'lijekova',
+        pillsLeft: 'tableta preostalo',
+        orderNow: 'NARUČI ODMAH!',
+        lowStockWarning: 'Upozorenje - niske zalihe'
     }
 };

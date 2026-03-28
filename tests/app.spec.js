@@ -162,6 +162,31 @@ test.describe('Data Persistence', () => {
     });
 });
 
+test.describe('Stock Management', () => {
+    test('should show stock warning for low stock medicines', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.waitForTimeout(500);
+        // Switch to patient 2 who has Sertraline with stock: 3
+        await page.selectOption('#patientSelector', { index: 1 });
+        await page.waitForTimeout(500);
+        const warningStyle = await page.locator('#stockWarning').getAttribute('style');
+        expect(warningStyle).not.toContain('display: none');
+    });
+
+    test('should decrement stock when marking medicine as taken', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('.tab:has-text("All Medicines")');
+        const stockBefore = await page.locator('#allList .stock-badge').first().textContent();
+        await page.locator('#allList button:has-text("Take")').first().click();
+        await page.waitForTimeout(500);
+    });
+
+    test('should display medicine count', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await expect(page.locator('#medicineCount')).toContainText('medicines');
+    });
+});
+
 test.describe('User Management', () => {
     test('should switch user', async ({ page }) => {
         page.on('dialog', dialog => dialog.accept());

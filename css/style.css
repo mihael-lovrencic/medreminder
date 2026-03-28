@@ -379,3 +379,33 @@ button:hover {
     color: #666;
     font-size: 0.9rem;
 }
+
+.stock-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.stock-ok {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.stock-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.stock-critical {
+    background: #fee2e2;
+    color: #dc2626;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}

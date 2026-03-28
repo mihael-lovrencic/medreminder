@@ -60,7 +60,13 @@ const defaultTranslations = {
         switchUserConfirm: 'Switch to a different user? All data will be cleared.',
         language: 'Language',
         noRoom: 'No room',
-        editPatient: 'Edit Patient'
+        editPatient: 'Edit Patient',
+        stockQuantity: 'Stock Quantity (pills)',
+        stockHint: 'Leave empty if tracking not needed',
+        medicines: 'medicines',
+        pillsLeft: 'pills left',
+        orderNow: 'ORDER NOW!',
+        lowStockWarning: 'Low Stock Warning'
     }
 };
 
