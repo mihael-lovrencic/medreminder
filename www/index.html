@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedReminder - Medicine Tracker</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="loginScreen" class="card login-screen">
+            <h2 data-i18n="welcome">Welcome to MedReminder</h2>
+            <p data-i18n="subtitle">Track medicines for multiple patients</p>
+            <div class="form-group">
+                <input type="text" id="userName" data-i18n-placeholder="enterName" placeholder="Enter your name (nurse/caregiver)">
+            </div>
+            <button onclick="createUser()" data-i18n="continueBtn">Continue</button>
+            <button class="btn-google" onclick="initGoogleSync()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                <span data-i18n="signInGoogle">Sign in with Google</span>
+            </button>
+            <button class="btn-secondary" onclick="startDemoMode()" data-i18n="tryDemo">Try Demo</button>
+        </div>
+
+        <div id="appScreen" class="hidden">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userNameDisplay">User</span>
+                </div>
+                <button class="btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showSettings()" data-i18n="settings">Settings</button>
+            </div>
+            <div id="syncStatus" class="sync-status hidden"></div>
+            
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="margin-bottom: 4px;" data-i18n="currentPatient">Current Patient</h2>
+                        <div id="currentPatientName" style="font-weight: 600; color: #667eea;">-</div>
+                        <div id="medicineCount" style="font-size: 0.85rem; color: #666; margin-top: 4px;"></div>
+                    </div>
+                    <button onclick="showPatientModal()" style="width: auto; padding: 8px 16px;" data-i18n="addPatient">+ Add Patient</button>
+                </div>
+                <select id="patientSelector" onchange="onPatientChange(event)" style="padding: 10px;">
+                </select>
+            </div>
+            
+            <div id="stockWarning" class="card" style="background: #fef3c7; display: none;">
+                <h3 style="color: #92400e; margin-bottom: 8px;">📦 Low Stock Warning</h3>
+                <div id="lowStockList"></div>
+            </div>
+
+            <h1>💊 MedReminder</h1>
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('today')" data-i18n="today">Today</button>
+                <button class="tab" onclick="showTab('all')" data-i18n="allMedicines">All Medicines</button>
+            </div>
+            <div id="today-tab">
+                <div class="card">
+                    <h2 data-i18n="addMedicine">Add Medicine Reminder</h2>
+                    <div class="form-group">
+                        <label data-i18n="medicineName">Medicine Name</label>
+                        <div class="medicine-select-wrapper">
+                            <input type="text" id="medName" data-i18n-placeholder="searchMedicine" placeholder="Search medicine..." autocomplete="off">
+                            <div id="medicineDropdown" class="medicine-dropdown hidden"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="dosage">Dosage</label>
+                        <input type="text" id="medDosage" placeholder="e.g., 1 tablet">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="time">Time</label>
+                        <input type="time" id="medTime">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="notes">Notes (optional)</label>
+                        <input type="text" id="medNotes" data-i18n-placeholder="notesPlaceholder" placeholder="e.g., Take with food">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="stockQuantity">Stock Quantity (pills)</label>
+                        <input type="number" id="medStock" placeholder="e.g., 30" min="0" style="width: 50%;">
+                        <small style="color: #888; font-size: 0.8rem;" data-i18n="stockHint">Leave empty if tracking not needed</small>
+                    </div>
+                    <button onclick="addMedicine()" data-i18n="addMedicine">Add Medicine</button>
+                </div>
+                <div class="card">
+                    <h2 data-i18n="todaySchedule">Today's Schedule</h2>
+                    <ul class="medicine-list" id="todayList">
+                        <li class="empty-state"><p data-i18n="noMedicines">No medicines scheduled for today</p></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="all-tab" style="display: none;">
+                <div class="card">
+                    <h2 data-i18n="allMedicines">All Medicines</h2>
+                    <ul class="medicine-list" id="allList"></ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 data-i18n="allPatients">All Patients</h2>
+                <ul class="medicine-list" id="patientList" style="background: transparent; padding: 0;">
+                </ul>
+            </div>
+        </div>
+
+        <div id="patientModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
+            <h2 id="patientModalTitle" data-i18n="addPatient">Add Patient</h2>
+            <div class="form-group">
+                <label data-i18n="patientName">Patient Name</label>
+                <input type="text" id="patientName" placeholder="e.g., John Doe">
+            </div>
+            <div class="form-group">
+                <label data-i18n="roomNumber">Room Number (optional)</label>
+                <input type="text" id="patientRoom" placeholder="e.g., Room 101">
+            </div>
+            <button id="savePatientBtn" onclick="addPatient()" data-i18n="savePatient">Save Patient</button>
+            <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()" data-i18n="deletePatient">Delete Patient</button>
+            <button class="btn-secondary" onclick="closePatientModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
+        </div>
+
+        <div id="settingsModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
+            <h2 data-i18n="settings">Settings</h2>
+            
+            <div class="form-group">
+                <label data-i18n="language">Language</label>
+                <select id="langSelector" onchange="onLangChange(event)" style="padding: 10px;">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="hr">Hrvatski</option>
+                    <option value="hu">Magyar</option>
+                    <option value="sl">Slovenščina</option>
+                    <option value="it">Italiano</option>
+                    <option value="fr">Français</option>
+                    <option value="es">Español</option>
+                    <option value="pl">Polski</option>
+                    <option value="cs">Čeština</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="ro">Română</option>
+                    <option value="sr">Српски</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="sv">Svenska</option>
+                    <option value="fi">Suomi</option>
+                    <option value="da">Dansk</option>
+                    <option value="no">Norsk</option>
+                    <option value="pt">Português</option>
+                    <option value="el">Ελληνικά</option>
+                </select>
+            </div>
+            
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
+            
+            <p style="margin-bottom: 16px; color: #666;" data-i18n="syncGoogleDrive">Sync your data with Google Drive</p>
+            <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                <span data-i18n="connectGoogle">Connect Google Drive</span>
+            </button>
+            <button id="syncToDriveBtn" class="btn-success hidden" onclick="syncToDrive()" data-i18n="uploadDrive">Upload to Google Drive</button>
+            <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()" data-i18n="downloadDrive">Download from Google Drive</button>
+            <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()" data-i18n="disconnectGoogle">Disconnect Google</button>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e0e0e0;">
+            <button class="btn-danger" onclick="switchUser()" data-i18n="switchUser">Switch User</button>
+            <button class="btn-secondary" onclick="closeSettings()" style="margin-top: 10px;" data-i18n="close">Close</button>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script>
+        initI18n().then(() => {
+            applyTranslations();
+        });
+    </script>
+    <script src="js/app.js"></script>
+</body>
+</html>

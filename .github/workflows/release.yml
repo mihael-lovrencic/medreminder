@@ -1,0 +1,90 @@
+name: Build Android APK & Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Capacitor
+        run: npm install @capacitor/core @capacitor/cli
+
+      - name: Initialize Capacitor
+        run: npx cap init MedReminder com.medreminder.app --web-dir=www
+
+      - name: Add Capacitor Android
+        run: npm install @capacitor/android && npx cap add android
+
+      - name: Copy web assets
+        run: |
+          mkdir -p www
+          cp index.html www/
+          cp -r css www/
+          cp -r js www/
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Find APK
+        id: find-apk
+        run: echo "apk_path=$(find . -name '*.apk' -type f | head -1)" >> $GITHUB_OUTPUT
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MedReminder-debug
+          path: ${{ steps.find-apk.outputs.apk_path }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: MedReminder-debug
+          path: ./apk
+
+      - name: Get APK filename
+        id: apk-file
+        run: echo "filename=$(ls ./apk/*.apk | xargs basename)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./apk/*.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

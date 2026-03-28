@@ -1,0 +1,8 @@
+{
+  "appId": "com.medreminder.app",
+  "appName": "MedReminder",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
