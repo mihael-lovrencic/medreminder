@@ -1,55 +1,85 @@
 # MedReminder
 
-A simple medicine tracking web app that helps you remember which medicines you've taken and which you need to take.
+Medicine tracking app for nursing homes and caregivers - track multiple patients and their medications.
 
 ## Features
 
-- Add medicines with name, dosage, and time
-- Mark medicines as taken
-- View today's schedule or all medicines
-- User-specific data (each user has their own profile)
-- Google Drive sync (requires Google Client ID setup)
-- Responsive design works on mobile and desktop
+- **Multi-Patient Management** - Add, edit, and delete patients with room numbers
+- **Medicine Scheduling** - Track medications with dosage, time, and notes
+- **Daily Tracking** - Mark medicines as taken/pending with visual indicators
+- **Stock Management** - Track pill inventory with low-stock warnings
+- **Multi-Language Support** - 20 European languages
+- **Demo Mode** - Try the app instantly with sample data
+- **Google Drive Sync** - Backup and restore data to Google Drive
+- **Responsive Design** - Works on mobile, tablet, and desktop
+- **PWA Ready** - Can be installed as an Android app
 
-## Running the App
-
-### Option 1: Local Server (Recommended for Google Sync)
+## Quick Start
 
 ```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm start
 ```
 
-Then open http://localhost:8080 in your browser.
+Open http://localhost:8080 in your browser.
 
-### Option 2: Direct File Open
+Or double-click `start.bat` (Windows) to launch the server.
 
-Open `index.html` directly in your browser. Note: Google Drive sync won't work with this method.
+## Demo Mode
 
-### Running Tests
+Click "Try Demo" on the login screen to explore the app with pre-loaded sample patients and medicines.
+
+## Android App
+
+The app is automatically built as an Android APK on every commit to `main`. 
+
+Download the latest release from the [Releases page](https://github.com/mihael-lovrencic/medreminder/releases/latest).
+
+## Testing
 
 ```bash
-npm install
 npm test
 ```
 
+Runs 24 Playwright e2e tests covering all major features.
+
 ## Google Drive Sync Setup
 
-To enable Google Drive sync:
+1. Create a project at [Google Cloud Console](https://console.cloud.google.com/)
+2. Enable Google Drive API
+3. Create OAuth 2.0 credentials (Web application)
+4. Add `http://localhost:8080` to authorized JavaScript origins
+5. In Settings, enter your Client ID to connect
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project
-3. Enable the Google Drive API
-4. Create OAuth 2.0 credentials (Web application)
-5. Add your domain to authorized origins
-6. Copy the Client ID
-7. In the app, go to Settings > Connect Google Drive and enter your Client ID
+See [GOOGLE_SETUP.md](GOOGLE_SETUP.md) for detailed instructions.
 
 ## Tech Stack
 
-- Plain HTML/CSS/JavaScript (no framework)
-- localStorage for data persistence
-- Playwright for testing
+- HTML/CSS/JavaScript (vanilla)
+- Capacitor (Android)
+- Playwright (testing)
+- localStorage for persistence
+- Google Drive API for cloud backup
+
+## Project Structure
+
+```
+├── index.html          # Main app
+├── css/
+│   └── style.css       # Styles
+├── js/
+│   ├── app.js          # Main application logic
+│   ├── i18n.js        # Internationalization
+│   └── lang/          # Language files (20 languages)
+├── tests/
+│   └── app.spec.js     # Playwright e2e tests
+├── android/            # Capacitor Android project
+└── .github/
+    └── workflows/      # CI/CD for APK builds
+```
 
 ## License
 
