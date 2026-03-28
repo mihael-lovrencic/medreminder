@@ -15,6 +15,12 @@ module.exports = defineConfig({
         baseURL: 'http://localhost:8080',
         trace: 'on-first-retry',
     },
+    webServer: {
+        command: 'npm start',
+        port: 8080,
+        timeout: 120000,
+        reuseExistingServer: true,
+    },
     projects: [
         {
             name: 'chromium',
