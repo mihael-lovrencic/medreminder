@@ -1,4 +1,4 @@
-const translations = {
+window.translations = {
     fi: {
         welcome: 'Tervetuloa MedReminderiin',
         subtitle: 'Lääkkeiden seuranta useille potilaille',

@@ -1,4 +1,4 @@
-const translations = {
+window.translations = {
     nl: {
         welcome: 'Welkom bij MedReminder',
         subtitle: 'Medicatie volgen voor meerdere patiënten',

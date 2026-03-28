@@ -140,6 +140,12 @@ button:hover {
     display: flex;
     gap: 8px;
     margin-top: 12px;
+    flex-direction: column;
+}
+
+.btn-group[style*="flex-direction: row"] {
+    flex-direction: row;
+    margin-top: 0;
 }
 
 .btn-take {

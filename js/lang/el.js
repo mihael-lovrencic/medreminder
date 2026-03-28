@@ -1,4 +1,4 @@
-const translations = {
+window.translations = {
     el: {
         welcome: 'Καλωσήρθατε στο MedReminder',
         subtitle: 'Παρακολούθηση φαρμάκων για πολλούς ασθενείς',

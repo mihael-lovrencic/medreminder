@@ -1,10 +1,11 @@
-const translations = {
+window.translations = {
     hr: {
         welcome: 'Dobrodošli u MedReminder',
         subtitle: 'Praćenje lijekova za više pacijenata',
         enterName: 'Unesite svoje ime (medicinska sestra/skrbnik)',
         continueBtn: 'Nastavi',
         signInGoogle: 'Prijavi se s Googleom',
+        tryDemo: 'Isprobaj demo',
         settings: 'Postavke',
         currentPatient: 'Trenutni pacijent',
         addPatient: 'Dodaj pacijenta',

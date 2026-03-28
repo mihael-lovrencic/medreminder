@@ -8,6 +8,7 @@ const defaultTranslations = {
         enterName: 'Enter your name (nurse/caregiver)',
         continueBtn: 'Continue',
         signInGoogle: 'Sign in with Google',
+        tryDemo: 'Try Demo',
         settings: 'Settings',
         currentPatient: 'Current Patient',
         addPatient: 'Add Patient',
@@ -74,15 +75,16 @@ async function loadLanguage(lang) {
         const response = await fetch(`js/lang/${lang}.js`);
         if (response.ok) {
             const script = await response.text();
-            eval(script);
-            if (typeof translations !== 'undefined' && translations[lang]) {
-                translations = translations[lang];
+            const fn = new Function(script + '; return window.translations;');
+            const result = fn();
+            if (result && result[lang]) {
+                translations = result[lang];
                 currentLang = lang;
                 return;
             }
         }
     } catch (e) {
-        console.log('Language file not found, using English');
+        console.log('Language file error:', e);
     }
     
     translations = defaultTranslations.en;
@@ -108,6 +110,8 @@ function setLanguage(lang) {
     loadLanguage(lang).then(() => {
         localStorage.setItem('medreminder_lang', lang);
         applyTranslations();
+        if (typeof renderPatientList === 'function') renderPatientList();
+        if (typeof renderLists === 'function') renderLists();
     });
 }
 
@@ -143,6 +147,7 @@ function onLangChange(event) {
 
 window.initI18n = initI18n;
 window.setLanguage = setLanguage;
+window.loadLanguage = loadLanguage;
 window.t = t;
 window.applyTranslations = applyTranslations;
 window.onLangChange = onLangChange;

@@ -1,4 +1,4 @@
-const translations = {
+window.translations = {
     hu: {
         welcome: 'Üdvözöl a MedReminder',
         subtitle: 'Több beteg gyógyszerének nyomon követése',

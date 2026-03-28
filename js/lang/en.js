@@ -1,4 +1,4 @@
-const translations = {
+window.translations = {
     en: {
         welcome: 'Welcome to MedReminder',
         subtitle: 'Track medicines for multiple patients',

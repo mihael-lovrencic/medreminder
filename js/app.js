@@ -37,6 +37,7 @@ let medicines = [];
 let takenToday = {};
 let currentPatientId = null;
 let customMedicines = [];
+let editingPatientId = null;
 
 function init() {
     const savedUser = localStorage.getItem('medreminder_user');
@@ -135,11 +136,64 @@ function createUser() {
         alert('Please enter your name');
         return;
     }
-    currentUser = { id: 'local_' + Date.now(), name: name, isGoogle: false };
+    currentUser = { id: 'user_' + Date.now(), name: name, isGoogle: false };
     localStorage.setItem('medreminder_user', JSON.stringify(currentUser));
     patients = [];
     savePatients();
     showApp();
+}
+
+function startDemoMode() {
+    currentUser = { id: 'demo_user', name: 'Demo User', isGoogle: false, isDemo: true };
+    localStorage.setItem('medreminder_user', JSON.stringify(currentUser));
+    
+    const demoPatients = [
+        { id: 'p_demo_1', name: 'Ivan Horvat', room: 'Room 101' },
+        { id: 'p_demo_2', name: 'Marija Kovačević', room: 'Room 102' },
+        { id: 'p_demo_3', name: 'Stjepan Novak', room: 'Room 103' }
+    ];
+    
+    const demoMedicines = {
+        'p_demo_1': [
+            { id: 'm_1', name: 'Metformin', dosage: '500mg', time: '08:00', notes: 'With breakfast' },
+            { id: 'm_2', name: 'Lisinopril', dosage: '10mg', time: '08:00', notes: '' },
+            { id: 'm_3', name: 'Metformin', dosage: '500mg', time: '20:00', notes: 'With dinner' }
+        ],
+        'p_demo_2': [
+            { id: 'm_4', name: 'Omeprazole', dosage: '20mg', time: '07:00', notes: 'Before breakfast' },
+            { id: 'm_5', name: 'Amlodipine', dosage: '5mg', time: '12:00', notes: '' },
+            { id: 'm_6', name: 'Sertraline', dosage: '50mg', time: '21:00', notes: 'Before sleep' }
+        ],
+        'p_demo_3': [
+            { id: 'm_7', name: 'Warfarin', dosage: '5mg', time: '09:00', notes: 'Same time daily' },
+            { id: 'm_8', name: 'Furosemide', dosage: '40mg', time: '09:00', notes: '' },
+            { id: 'm_9', name: 'Aspirin', dosage: '100mg', time: '21:00', notes: 'Before sleep' }
+        ]
+    };
+    
+    const today = new Date().toISOString().split('T')[0];
+    const takenDemo = {
+        'p_demo_1': { [today]: ['m_1', 'm_2'] },
+        'p_demo_2': { [today]: ['m_4'] },
+        'p_demo_3': { [today]: ['m_7'] }
+    };
+    
+    patients = demoPatients;
+    savePatients();
+    
+    patients.forEach(p => {
+        const data = {
+            medicines: demoMedicines[p.id] || [],
+            takenToday: takenDemo[p.id] || {}
+        };
+        localStorage.setItem(getPatientStorageKey(p.id), JSON.stringify(data));
+    });
+    
+    currentPatientId = patients[0].id;
+    loadPatientData(currentPatientId);
+    showApp();
+    
+    showSyncStatus('Demo mode active - try editing and managing!', 'synced');
 }
 
 function loadPatients() {
@@ -228,15 +282,18 @@ function showSyncStatus(message, type = 'synced') {
 function renderPatientList() {
     const list = document.getElementById('patientList');
     if (patients.length === 0) {
-        list.innerHTML = '<li class="empty-state"><p>No patients yet</p></li>';
+        list.innerHTML = '<li class="empty-state"><p>' + (t('noPatients') || 'No patients yet') + '</p></li>';
     } else {
         list.innerHTML = patients.map(p => `
-            <li class="patient-item ${p.id === currentPatientId ? 'active' : ''}" onclick="selectPatient(${p.id})">
+            <li class="patient-item ${p.id === currentPatientId ? 'active' : ''}" onclick="selectPatient('${p.id}')">
                 <div class="patient-info">
                     <div class="patient-name">${p.name}</div>
                     <div class="patient-room">${p.room || t('noRoom')}</div>
                 </div>
-                <button class="btn-delete" onclick="event.stopPropagation(); deletePatient(${p.id})">${t('delete')}</button>
+                <div class="btn-group" style="flex-direction: row; margin-top: 0;">
+                    <button class="btn-secondary" style="padding: 6px 10px; font-size: 0.8rem; margin-bottom: 0;" onclick="event.stopPropagation(); showPatientModal('${p.id}')">${t('edit')}</button>
+                    <button class="btn-delete" style="padding: 6px 10px; font-size: 0.8rem; margin-bottom: 0;" onclick="event.stopPropagation(); deletePatient('${p.id}')">${t('delete')}</button>
+                </div>
             </li>
         `).join('');
     }
@@ -263,7 +320,7 @@ function selectPatient(id) {
 }
 
 function onPatientChange(e) {
-    const id = parseInt(e.target.value);
+    const id = e.target.value;
     selectPatient(id);
 }
 
@@ -275,16 +332,18 @@ function showPatientModal(editId = null) {
     const saveBtn = document.getElementById('savePatientBtn');
     const deleteBtn = document.getElementById('deletePatientBtn');
     
+    editingPatientId = editId;
+    
     if (editId) {
         const patient = patients.find(p => p.id === editId);
-        title.textContent = 'Edit Patient';
+        title.textContent = t('editPatient');
         nameInput.value = patient.name;
         roomInput.value = patient.room || '';
         saveBtn.onclick = () => updatePatient(editId);
         deleteBtn.classList.remove('hidden');
         deleteBtn.onclick = () => deletePatient(editId);
     } else {
-        title.textContent = 'Add Patient';
+        title.textContent = t('addPatient');
         nameInput.value = '';
         roomInput.value = '';
         saveBtn.onclick = addPatient;
@@ -308,7 +367,7 @@ function addPatient() {
     }
     
     const patient = {
-        id: Date.now(),
+        id: 'p_' + Date.now(),
         name: name,
         room: room
     };
@@ -327,7 +386,7 @@ function updatePatient(id) {
     const room = document.getElementById('patientRoom').value.trim();
     
     if (!name) {
-        alert('Please enter patient name');
+        alert(t('enterPatientName') || 'Please enter patient name');
         return;
     }
     
@@ -343,7 +402,7 @@ function updatePatient(id) {
 }
 
 function deletePatient(id) {
-    if (!confirm('Delete this patient and all their medicines?')) return;
+    if (!confirm(t('deleteConfirm') || 'Delete this patient and all their medicines?')) return;
     
     patients = patients.filter(p => p.id !== id);
     localStorage.removeItem(getPatientStorageKey(id));
@@ -370,11 +429,11 @@ function addMedicine() {
     const notes = document.getElementById('medNotes').value.trim();
 
     if (!name || !dosage || !time) {
-        alert('Please fill in name, dosage, and time');
+        alert(t('pleaseFillFields') || 'Please fill in name, dosage, and time');
         return;
     }
 
-    medicines.push({ id: Date.now(), name, dosage, time, notes });
+    medicines.push({ id: 'm_' + Date.now(), name, dosage, time, notes });
     medicines.sort((a, b) => a.time.localeCompare(b.time));
     savePatientData();
 
@@ -418,19 +477,19 @@ function renderLists() {
     const todayMedicines = medicines.filter(m => m.time <= currentTime);
 
     const render = (list) => {
-        if (list.length === 0) return '<li class="empty-state"><p>No medicines added yet</p></li>';
+        if (list.length === 0) return '<li class="empty-state"><p>' + (t('noMedicinesAll') || 'No medicines added yet') + '</p></li>';
         return list.map(med => {
             const isTaken = todayTaken.includes(med.id);
             return `<li class="medicine-item ${isTaken ? 'taken' : ''}">
                 <div class="medicine-info">
-                    <div class="medicine-name">${med.name}<span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">${isTaken ? 'Taken' : 'Pending'}</span></div>
+                    <div class="medicine-name">${med.name}<span class="status-badge ${isTaken ? 'status-taken' : 'status-pending'}">${isTaken ? t('taken') : t('pending')}</span></div>
                     <div class="medicine-dosage">${med.dosage}</div>
                     <div class="medicine-time">${formatTime(med.time)}</div>
                     ${med.notes ? `<div class="medicine-notes">${med.notes}</div>` : ''}
                 </div>
                 <div class="btn-group" style="flex-direction: column;">
-                    ${isTaken ? `<button class="btn-take" onclick="markAsNotTaken(${med.id})">Undo</button>` : `<button class="btn-take" onclick="markAsTaken(${med.id})">Take</button>`}
-                    <button class="btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                    ${isTaken ? `<button class="btn-take" onclick="markAsNotTaken('${med.id}')">${t('undo')}</button>` : `<button class="btn-take" onclick="markAsTaken('${med.id}')">${t('take')}</button>`}
+                    <button class="btn-delete" onclick="deleteMedicine('${med.id}')">${t('delete')}</button>
                 </div>
             </li>`;
         }).join('');
@@ -583,7 +642,7 @@ async function syncFromDrive() {
         saveCustomMedicines();
         
         Object.keys(allData.patientData || {}).forEach(patientId => {
-            localStorage.setItem(getPatientStorageKey(parseInt(patientId)), JSON.stringify(allData.patientData[patientId]));
+            localStorage.setItem(getPatientStorageKey(patientId), JSON.stringify(allData.patientData[patientId]));
         });
 
         if (patients.length > 0) {

@@ -1,10 +1,11 @@
-const translations = {
+window.translations = {
     de: {
         welcome: 'Willkommen bei MedReminder',
         subtitle: 'Medikamente für mehrere Patienten verfolgen',
         enterName: 'Geben Sie Ihren Namen ein (Pflegekraft)',
         continueBtn: 'Weiter',
         signInGoogle: 'Mit Google anmelden',
+        tryDemo: 'Demo testen',
         settings: 'Einstellungen',
         currentPatient: 'Aktueller Patient',
         addPatient: 'Patient hinzufügen',
