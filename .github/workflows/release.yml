@@ -9,6 +9,7 @@ on:
       - '**.css'
       - 'package.json'
       - 'package-lock.json'
+      - '.github/workflows/release.yml'
   workflow_dispatch:
 
 jobs:
