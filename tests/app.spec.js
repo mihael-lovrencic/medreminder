@@ -58,7 +58,7 @@ test.describe('Patient Management', () => {
     test('should add new patient', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
         const initialCount = await page.locator('.patient-item').count();
-        await page.click('button:has-text("Add Patient")');
+        await page.locator('.card button:has-text("Add Patient")').click();
         await page.fill('#patientName', 'New Patient');
         await page.click('#savePatientBtn');
         await expect(page.locator('.patient-item')).toHaveCount(initialCount + 1);
@@ -129,31 +129,37 @@ test.describe('Tab Navigation', () => {
 test.describe('Settings', () => {
     test('should open settings', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
         await expect(page.locator('#settingsModal')).toBeVisible();
     });
 
     test('should close settings', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
-        await page.locator('#settingsModal button').last().click();
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
+        await page.locator('#settingsModal .close-btn').click();
         await expect(page.locator('#settingsModal')).toHaveClass(/hidden/);
     });
 
     test('should switch to German language', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
         await page.selectOption('#langSelector', 'de');
-        await page.locator('#settingsModal button').last().click();
-        await expect(page.locator('button:has-text("Patient hinzufügen")')).toBeVisible();
+        await page.locator('#settingsModal .close-btn').click();
+        await page.locator('.hamburger-menu').click();
+        await expect(page.locator('.menu-links button span:has-text("Patient hinzufügen")')).toBeVisible();
     });
 
     test('should switch to Croatian language', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
         await page.selectOption('#langSelector', 'hr');
-        await page.locator('#settingsModal button').last().click();
-        await expect(page.locator('button:has-text("Dodaj pacijenta")')).toBeVisible();
+        await page.locator('#settingsModal .close-btn').click();
+        await page.locator('.hamburger-menu').click();
+        await expect(page.locator('.menu-links button span:has-text("Dodaj pacijenta")')).toBeVisible();
     });
 });
 
@@ -195,8 +201,9 @@ test.describe('User Management', () => {
     test('should switch user', async ({ page }) => {
         page.on('dialog', dialog => dialog.accept());
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
-        await page.click('button:has-text("Switch User")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
+        await page.click('#settingsModal button:has-text("Switch User")');
         await expect(page.locator('#loginScreen')).toBeVisible();
     });
 });
@@ -212,23 +219,26 @@ test.describe('Responsive', () => {
 test.describe('Organization', () => {
     test('should open settings and see organization section', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
         await expect(page.locator('#settingsModal')).toBeVisible();
         await expect(page.locator('#orgSection')).toBeVisible();
     });
 
     test('should open create organization modal', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
-        await page.click('button:has-text("Create Organization")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
+        await page.locator('#settingsModal button:has-text("Create Organization")').click();
         await expect(page.locator('#orgModal')).toBeVisible();
         await expect(page.locator('#orgNameInput')).toBeVisible();
     });
 
     test('should create and display organization', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
-        await page.click('button:has-text("Create Organization")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
+        await page.locator('#settingsModal button:has-text("Create Organization")').click();
         await page.fill('#orgNameInput', 'Test Hospital');
         await page.click('#saveOrgBtn');
         await expect(page.locator('#orgNameDisplay')).toContainText('Test Hospital');
@@ -238,11 +248,12 @@ test.describe('Organization', () => {
 
     test('should share backup to organization', async ({ page }) => {
         await page.click('button:has-text("Try Demo")');
-        await page.click('button:has-text("Settings")');
-        await page.click('button:has-text("Create Organization")');
+        await page.locator('.hamburger-menu').click();
+        await page.locator('.menu-links button:has-text("Settings")').click();
+        await page.locator('#settingsModal button:has-text("Create Organization")').click();
         await page.fill('#orgNameInput', 'Test Hospital');
         await page.click('#saveOrgBtn');
-        await page.click('button:has-text("Share Backup to Organization")');
+        await page.click('#settingsModal button:has-text("Share Backup")');
         await expect(page.locator('#orgBackupList')).toContainText('Demo User');
     });
 });
