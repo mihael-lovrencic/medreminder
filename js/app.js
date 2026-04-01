@@ -583,7 +583,7 @@ function checkLowStock() {
     const low = state.medicines.filter(m => m.stock != null && m.stock <= 10);
     if (low.length) {
         warning.classList.remove('hidden');
-        list.innerHTML = low.map(m => `<div>${m.name} - ${m.stock} left ${m.stock <= 5 ? '⚠️' : ''}</div>`).join('');
+        list.innerHTML = low.map(m => `<div>${m.name} - ${m.stock} ${t('left')} ${m.stock <= 5 ? '⚠️' : ''}</div>`).join('');
     } else {
         warning.classList.add('hidden');
     }
@@ -598,8 +598,8 @@ function renderLists() {
     
     const getStockBadge = (m) => {
         if (m.stock == null) return '';
-        if (m.stock <= 5) return `<span class="stock-badge stock-critical">${m.stock} left</span>`;
-        if (m.stock <= 10) return `<span class="stock-badge stock-warning">${m.stock} left</span>`;
+        if (m.stock <= 5) return `<span class="stock-badge stock-critical">${m.stock} ${t('left')}</span>`;
+        if (m.stock <= 10) return `<span class="stock-badge stock-warning">${m.stock} ${t('left')}</span>`;
         return `<span class="stock-badge stock-ok">${m.stock} in stock</span>`;
     };
     
