@@ -617,7 +617,7 @@ function renderLists() {
                     ${med.notes ? `<div style="color:#888;font-size:13px;margin-top:4px">${med.notes}</div>` : ''}
                 </div>
                 <div style="display:flex;gap:8px">
-                    <button class="btn-take" onclick="markAsTaken('${med.id}')">${isTaken ? t('undo') : t('take')}</button>
+                    <button class="btn-take" onclick="${isTaken ? `markAsNotTaken('${med.id}')` : `markAsTaken('${med.id}')`}">${isTaken ? t('undo') : t('take')}</button>
                     <button class="btn-delete" onclick="deleteMedicine('${med.id}')">${t('delete')}</button>
                 </div>
             </div>

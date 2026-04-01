@@ -35,6 +35,7 @@ const defaultTranslations = {
         downloadDrive: 'Download',
         disconnectGoogle: 'Disconnect',
         switchUser: 'Switch User',
+        settings: 'Settings',
         close: 'Close',
         save: 'Save',
         edit: 'Edit',
