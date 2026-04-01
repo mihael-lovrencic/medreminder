@@ -3,169 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedReminder - Medicine Tracker</title>
+    <title>MedReminder</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div id="loginScreen" class="card login-screen">
-            <h2 data-i18n="welcome">Welcome to MedReminder</h2>
-            <p data-i18n="subtitle">Track medicines for multiple patients</p>
-            <div class="form-group">
-                <input type="text" id="userName" data-i18n-placeholder="enterName" placeholder="Enter your name (nurse/caregiver)">
+    <div class="app-container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <div class="logo">💊</div>
+            <h1>MedReminder</h1>
+            <p class="tagline">Track medicines for your patients</p>
+            <div class="login-form">
+                <input type="text" id="userName" placeholder="Your name" data-i18n-placeholder="enterName">
+                <button onclick="createUser()" data-i18n="continueBtn">Continue</button>
             </div>
-            <button onclick="createUser()" data-i18n="continueBtn">Continue</button>
             <button class="btn-google" onclick="initGoogleSync()">
                 <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 <span data-i18n="signInGoogle">Sign in with Google</span>
             </button>
-            <button class="btn-secondary" onclick="startDemoMode()" data-i18n="tryDemo">Try Demo</button>
+            <button class="btn-text" onclick="startDemoMode()" data-i18n="tryDemo">Try Demo Mode</button>
         </div>
 
+        <!-- Main App -->
         <div id="appScreen" class="hidden">
-            <nav class="top-nav">
-                <div class="nav-left">
-                    <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <span class="app-title">💊 MedReminder</span>
+            <header class="app-header">
+                <div class="header-left">
+                    <select id="patientSelector" onchange="onPatientChange(event)"></select>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <span id="userNameDisplay">User</span>
-                </div>
-            </nav>
-            
-            <div id="sideMenu" class="side-menu">
-                <div class="menu-overlay" onclick="closeMenu()"></div>
-                <div class="menu-content">
-                    <div class="menu-header">
-                        <div class="user-avatar large" id="menuUserAvatar">U</div>
-                        <div>
-                            <strong id="menuUserName">User</strong>
-                        </div>
-                    </div>
-                    <div class="menu-links">
-                        <button onclick="showPatientModal(); closeMenu();">
-                            <span>👤</span> <span data-i18n="addPatient">Add Patient</span>
-                        </button>
-                        <button onclick="showTab('today'); closeMenu();">
-                            <span>📋</span> <span data-i18n="todaySchedule">Today's Schedule</span>
-                        </button>
-                        <button onclick="showTab('all'); closeMenu();">
-                            <span>💊</span> <span data-i18n="allMedicines">All Medicines</span>
-                        </button>
-                        <button onclick="showCreateOrgModal(); closeMenu();">
-                            <span>🏥</span> <span data-i18n="createOrganization">Create Organization</span>
-                        </button>
-                        <button onclick="showSettings(); closeMenu();">
-                            <span>⚙️</span> <span data-i18n="settings">Settings</span>
-                        </button>
-                    </div>
-                    <div class="menu-footer">
-                        <button class="btn-danger" onclick="switchUser(); closeMenu();" data-i18n="switchUser">Switch User</button>
-                    </div>
-                </div>
-            </div>
-            <div id="syncStatus" class="sync-status hidden"></div>
-            
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <div>
-                        <h2 style="margin-bottom: 4px;" data-i18n="currentPatient">Current Patient</h2>
-                        <div id="currentPatientName" style="font-weight: 600; color: #667eea;">-</div>
-                        <div id="medicineCount" style="font-size: 0.85rem; color: #666; margin-top: 4px;"></div>
-                    </div>
-                    <button onclick="showPatientModal()" style="width: auto; padding: 8px 16px;" data-i18n="addPatient">+ Add Patient</button>
-                </div>
-                <select id="patientSelector" onchange="onPatientChange(event)" style="padding: 10px;">
-                </select>
-            </div>
-            
-            <div id="stockWarning" class="card" style="background: #fef3c7; display: none;">
-                <h3 style="color: #92400e; margin-bottom: 8px;" data-i18n="lowStockWarning">📦 Low Stock Warning</h3>
-                <div id="lowStockList"></div>
-            </div>
+                <button class="icon-btn" onclick="showSettings()">⚙️</button>
+            </header>
 
-            <h1 data-i18n="medReminder">💊 MedReminder</h1>
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('today')" data-i18n="today">Today</button>
-                <button class="tab" onclick="showTab('all')" data-i18n="allMedicines">All Medicines</button>
-            </div>
-            <div id="today-tab">
-                <div class="card">
-                    <h2 data-i18n="addMedicine">Add Medicine Reminder</h2>
+            <main class="app-content">
+                <!-- Today's Tab -->
+                <div id="todayView">
+                    <div class="section">
+                        <h3 data-i18n="todaySchedule">Today's Schedule</h3>
+                        <div id="todayList" class="medicine-list"></div>
+                    </div>
+                    <div id="stockWarning" class="stock-alert hidden">
+                        <span class="alert-icon">⚠️</span>
+                        <div id="lowStockList"></div>
+                    </div>
+                </div>
+
+                <!-- All Medicines Tab -->
+                <div id="allView" class="hidden">
+                    <div class="section">
+                        <h3 data-i18n="allMedicines">All Medicines</h3>
+                        <div id="allList" class="medicine-list"></div>
+                    </div>
+                </div>
+
+                <!-- Patients Tab -->
+                <div id="patientsView" class="hidden">
+                    <div class="section">
+                        <div class="section-header">
+                            <h3 data-i18n="allPatients">Patients</h3>
+                            <button class="btn-sm" onclick="showPatientModal()" data-i18n="addPatient">+ Add</button>
+                        </div>
+                        <div id="patientList" class="patient-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Add Medicine (FAB) -->
+                <button class="fab" onclick="toggleAddMedicine()">+</button>
+
+                <!-- Add Medicine Panel -->
+                <div id="addMedicinePanel" class="slide-panel hidden">
+                    <div class="panel-header">
+                        <h3 data-i18n="addMedicine">Add Medicine</h3>
+                        <button class="icon-btn" onclick="toggleAddMedicine()">✕</button>
+                    </div>
                     <div class="form-group">
                         <label data-i18n="medicineName">Medicine Name</label>
-                        <div class="medicine-select-wrapper">
-                            <input type="text" id="medName" data-i18n-placeholder="searchMedicine" placeholder="Search medicine..." autocomplete="off">
-                            <div id="medicineDropdown" class="medicine-dropdown hidden"></div>
+                        <input type="text" id="medName" placeholder="Search or enter medicine" data-i18n-placeholder="searchMedicine" autocomplete="off">
+                        <div id="medicineDropdown" class="dropdown hidden"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-i18n="dosage">Dosage</label>
+                            <input type="text" id="medDosage" placeholder="e.g., 500mg" data-i18n-placeholder="dosagePlaceholder">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="time">Time</label>
+                            <input type="time" id="medTime">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="dosage">Dosage</label>
-                        <input type="text" id="medDosage" data-i18n-placeholder="dosagePlaceholder" placeholder="e.g., 1 tablet">
+                        <label data-i18n="notes">Notes</label>
+                        <input type="text" id="medNotes" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder">
                     </div>
                     <div class="form-group">
-                        <label data-i18n="time">Time</label>
-                        <input type="time" id="medTime">
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="notes">Notes (optional)</label>
-                        <input type="text" id="medNotes" data-i18n-placeholder="notesPlaceholder" placeholder="e.g., Take with food">
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="stockQuantity">Stock Quantity (pills)</label>
-                        <input type="number" id="medStock" placeholder="e.g., 30" min="0" style="width: 50%;">
-                        <small style="color: #888; font-size: 0.8rem;" data-i18n="stockHint">Leave empty if tracking not needed</small>
+                        <label data-i18n="stockQuantity">Stock (pills)</label>
+                        <input type="number" id="medStock" placeholder="30" min="0">
                     </div>
                     <button onclick="addMedicine()" data-i18n="addMedicine">Add Medicine</button>
                 </div>
-                <div class="card">
-                    <h2 data-i18n="todaySchedule">Today's Schedule</h2>
-                    <ul class="medicine-list" id="todayList">
-                        <li class="empty-state"><p data-i18n="noMedicines">No medicines scheduled for today</p></li>
-                    </ul>
-                </div>
-            </div>
-            <div id="all-tab" style="display: none;">
-                <div class="card">
-                    <h2 data-i18n="allMedicines">All Medicines</h2>
-                    <ul class="medicine-list" id="allList"></ul>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2 data-i18n="allPatients">All Patients</h2>
-                <ul class="medicine-list" id="patientList" style="background: transparent; padding: 0;">
-                </ul>
-            </div>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" onclick="showView('today')">
+                    <span class="nav-icon">📋</span>
+                    <span data-i18n="today">Today</span>
+                </button>
+                <button class="nav-item" onclick="showView('medicines')">
+                    <span class="nav-icon">💊</span>
+                    <span data-i18n="allMedicines">Medicines</span>
+                </button>
+                <button class="nav-item" onclick="showView('patients')">
+                    <span class="nav-icon">👥</span>
+                    <span data-i18n="allPatients">Patients</span>
+                </button>
+            </nav>
         </div>
 
-        <div id="patientModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
-            <h2 id="patientModalTitle" data-i18n="addPatient">Add Patient</h2>
-            <div class="form-group">
-                <label data-i18n="patientName">Patient Name</label>
-                <input type="text" id="patientName" data-i18n-placeholder="patientNamePlaceholder" placeholder="e.g., John Doe">
-            </div>
-            <div class="form-group">
-                <label data-i18n="roomNumber">Room Number (optional)</label>
-                <input type="text" id="patientRoom" data-i18n-placeholder="roomPlaceholder" placeholder="e.g., Room 101">
-            </div>
-            <button id="savePatientBtn" onclick="addPatient()" data-i18n="savePatient">Save Patient</button>
-            <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()" data-i18n="deletePatient">Delete Patient</button>
-            <button class="btn-secondary" onclick="closePatientModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
-        </div>
-
-        <div id="settingsModal" class="card hidden settings-modal">
-            <h2 data-i18n="settings">Settings</h2>
-            
-            <div class="settings-section">
-                <h3 data-i18n="general">General</h3>
+        <!-- Modals -->
+        <div id="patientModal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="patientModalTitle" data-i18n="addPatient">Add Patient</h2>
                 <div class="form-group">
+                    <label data-i18n="patientName">Patient Name</label>
+                    <input type="text" id="patientName" placeholder="e.g., John Doe" data-i18n-placeholder="patientNamePlaceholder">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="roomNumber">Room</label>
+                    <input type="text" id="patientRoom" placeholder="e.g., Room 101" data-i18n-placeholder="roomPlaceholder">
+                </div>
+                <div class="modal-actions">
+                    <button id="savePatientBtn" onclick="addPatient()" data-i18n="savePatient">Save</button>
+                    <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()" data-i18n="deletePatient">Delete</button>
+                    <button class="btn-text" onclick="closePatientModal()" data-i18n="cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="settingsModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 data-i18n="settings">Settings</h2>
+                    <button class="icon-btn" onclick="closeSettings()">✕</button>
+                </div>
+                
+                <div class="settings-group">
                     <label data-i18n="language">Language</label>
                     <select id="langSelector" onchange="onLangChange(event)">
                         <option value="en">English</option>
@@ -190,84 +171,83 @@
                         <option value="el">Ελληνικά</option>
                     </select>
                 </div>
-            </div>
-            
-            <div class="settings-section">
-                <h3 data-i18n="team">Team</h3>
-                <div id="orgSection">
-                    <div id="orgInfo" class="hidden org-info-box">
-                        <span class="org-name" id="orgNameDisplay"></span>
-                        <div class="org-code-box">
-                            <div>
-                                <div class="org-code-label" data-i18n="orgCode">Organization Code</div>
-                                <div class="org-code-value" id="orgCodeDisplay"></div>
+
+                <div class="settings-group">
+                    <h3 data-i18n="team">Team</h3>
+                    <div id="orgSection">
+                        <div id="orgInfo" class="org-card hidden">
+                            <div class="org-name" id="orgNameDisplay"></div>
+                            <div class="org-code">
+                                <span data-i18n="orgCode">Code:</span>
+                                <span id="orgCodeDisplay"></span>
+                                <button class="btn-sm" onclick="copyOrgCode()" data-i18n="copy">Copy</button>
                             </div>
-                            <button class="org-code-copy" onclick="copyOrgCode()" data-i18n="copy">Copy</button>
+                            <div class="org-stats">
+                                <span id="orgMemberCount"></span>
+                                <span id="orgBackupCount"></span>
+                            </div>
                         </div>
-                        <div class="org-stats">
-                            <div class="org-stat"><span>👥</span> <span id="orgMemberCount"></span></div>
-                            <div class="org-stat"><span>📋</span> <span id="orgBackupCount"></span></div>
+                        <button id="createOrgBtn" onclick="showCreateOrgModal()" data-i18n="createOrganization">+ Create Organization</button>
+                        <button id="joinOrgBtn" class="hidden" onclick="showJoinOrgModal()" data-i18n="joinOrganization">Join Organization</button>
+                        <button id="leaveOrgBtn" class="btn-danger hidden" onclick="leaveOrganization()" data-i18n="leaveOrganization">Leave</button>
+                        
+                        <div id="orgBackupSection" class="hidden">
+                            <button class="btn-primary" onclick="shareBackupToOrg()" data-i18n="shareBackupOrg">Share Backup</button>
+                            <button class="btn-secondary" onclick="loadBackupFromOrg()" data-i18n="loadBackupOrg">Load Backup</button>
+                            <div id="orgBackupList"></div>
                         </div>
                     </div>
-                    <button id="createOrgBtn" onclick="showCreateOrgModal()">+ <span data-i18n="createOrganization">Create Organization</span></button>
-                    <button id="joinOrgBtn" class="btn-secondary hidden" onclick="showJoinOrgModal()" data-i18n="joinOrganization">Join Organization</button>
-                    <button id="leaveOrgBtn" class="btn-danger hidden" onclick="leaveOrganization()" data-i18n="leaveOrganization">Leave Organization</button>
                 </div>
-                
-                <div id="orgBackupSection" class="hidden" style="margin-top: 12px;">
-                    <p class="section-desc" data-i18n="orgBackupDesc">Share data with team members</p>
-                    <button class="btn-success" onclick="shareBackupToOrg()" data-i18n="shareBackupOrg">Share Backup to Organization</button>
-                    <button class="btn-secondary" onclick="loadBackupFromOrg()" data-i18n="loadBackupOrg">Load Backup from Organization</button>
-                    <div id="orgBackupList"></div>
+
+                <div class="settings-group">
+                    <h3 data-i18n="backup">Backup</h3>
+                    <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        <span data-i18n="connectGoogle">Connect Google Drive</span>
+                    </button>
+                    <button id="syncToDriveBtn" class="btn-primary hidden" onclick="syncToDrive()" data-i18n="uploadDrive">Upload</button>
+                    <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()" data-i18n="downloadDrive">Download</button>
+                    <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()" data-i18n="disconnectGoogle">Disconnect</button>
                 </div>
-            </div>
-            
-            <div class="settings-section">
-                <h3 data-i18n="backup">Backup & Sync</h3>
-                <p class="section-desc" data-i18n="syncGoogleDrive">Sync your data with Google Drive</p>
-                <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
-                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    <span data-i18n="connectGoogle">Connect Google Drive</span>
-                </button>
-                <button id="syncToDriveBtn" class="btn-success hidden" onclick="syncToDrive()" data-i18n="uploadDrive">Upload to Google Drive</button>
-                <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()" data-i18n="downloadDrive">Download from Google Drive</button>
-                <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()" data-i18n="disconnectGoogle">Disconnect Google</button>
-            </div>
-            
-            <div class="settings-section">
-                <h3 data-i18n="account">Account</h3>
+
                 <button class="btn-danger" onclick="switchUser()" data-i18n="switchUser">Switch User</button>
             </div>
-            
-            <button class="btn-secondary close-btn" onclick="closeSettings()" data-i18n="close">Close</button>
         </div>
-        
-        <div id="orgModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; width: 90%; max-width: 400px;">
-            <h2 id="orgModalTitle" data-i18n="createOrganization">Create Organization</h2>
-            <div class="form-group">
-                <label data-i18n="orgName">Organization Name</label>
-                <input type="text" id="orgNameInput" data-i18n-placeholder="orgNamePlaceholder" placeholder="e.g., City Hospital Ward A">
+
+        <div id="orgModal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="orgModalTitle" data-i18n="createOrganization">Create Organization</h2>
+                <div class="form-group">
+                    <label data-i18n="orgName">Organization Name</label>
+                    <input type="text" id="orgNameInput" placeholder="e.g., City Hospital" data-i18n-placeholder="orgNamePlaceholder">
+                </div>
+                <div class="modal-actions">
+                    <button id="saveOrgBtn" onclick="saveOrganization()" data-i18n="create">Create</button>
+                    <button class="btn-text" onclick="closeOrgModal()" data-i18n="cancel">Cancel</button>
+                </div>
             </div>
-            <button id="saveOrgBtn" onclick="saveOrganization()" data-i18n="create">Create</button>
-            <button class="btn-secondary" onclick="closeOrgModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
         </div>
-        
-        <div id="joinOrgModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; width: 90%; max-width: 400px;">
-            <h2 data-i18n="joinOrganization">Join Organization</h2>
-            <div class="form-group">
-                <label data-i18n="orgCode">Organization Code</label>
-                <input type="text" id="orgCodeInput" data-i18n-placeholder="orgCodePlaceholder" placeholder="Enter organization code">
+
+        <div id="joinOrgModal" class="modal hidden">
+            <div class="modal-content">
+                <h2 data-i18n="joinOrganization">Join Organization</h2>
+                <div class="form-group">
+                    <label data-i18n="orgCode">Organization Code</label>
+                    <input type="text" id="orgCodeInput" placeholder="Enter code" data-i18n-placeholder="orgCodePlaceholder">
+                </div>
+                <div class="modal-actions">
+                    <button onclick="joinOrganization()" data-i18n="join">Join</button>
+                    <button class="btn-text" onclick="closeJoinOrgModal()" data-i18n="cancel">Cancel</button>
+                </div>
             </div>
-            <button onclick="joinOrganization()" data-i18n="join">Join</button>
-            <button class="btn-secondary" onclick="closeJoinOrgModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
         </div>
+
+        <div id="syncStatus" class="toast hidden"></div>
     </div>
 
     <script src="js/i18n.js"></script>
     <script>
-        initI18n().then(() => {
-            applyTranslations();
-        });
+        initI18n().then(() => applyTranslations());
     </script>
     <script src="js/app.js"></script>
 </body>
