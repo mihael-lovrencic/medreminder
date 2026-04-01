@@ -76,7 +76,9 @@ function updateOrgUI() {
     if (currentOrganization) {
         orgInfo.classList.remove('hidden');
         document.getElementById('orgNameDisplay').textContent = currentOrganization.name;
-        document.getElementById('orgMemberCount').textContent = currentOrganization.members.length + ' ' + (t('memberCount') || 'member(s)') + ' | Code: ' + currentOrganization.code;
+        document.getElementById('orgCodeDisplay').textContent = currentOrganization.code;
+        document.getElementById('orgMemberCount').textContent = currentOrganization.members.length + ' ' + (t('memberCount') || 'members');
+        document.getElementById('orgBackupCount').textContent = (currentOrganization.backups?.length || 0) + ' ' + (t('backups') || 'backups');
         createBtn.classList.add('hidden');
         joinBtn.classList.add('hidden');
         leaveBtn.classList.remove('hidden');
@@ -89,6 +91,15 @@ function updateOrgUI() {
         leaveBtn.classList.add('hidden');
         backupSection.classList.add('hidden');
     }
+}
+
+function copyOrgCode() {
+    const code = document.getElementById('orgCodeDisplay').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        showSyncStatus(t('copied') || 'Code copied!', 'synced');
+    }).catch(() => {
+        showSyncStatus(t('copyFailed') || 'Failed to copy', 'pending');
+    });
 }
 
 function showCreateOrgModal() {

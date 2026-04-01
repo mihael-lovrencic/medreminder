@@ -116,6 +116,10 @@ window.translations = {
         orgBackupDesc: 'Podijeli podatke s članovima tima',
         patients: 'Pacijenti',
         teamSettings: 'Postavke tima',
-        openSettings: 'Otvori postavke'
+        openSettings: 'Otvori postavke',
+        copy: 'Kopiraj',
+        copied: 'Kod kopiran!',
+        copyFailed: 'Kopiranje nije uspjelo',
+        backups: 'backupa'
     }
 };

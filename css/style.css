@@ -641,22 +641,66 @@ button:hover {
 }
 
 .org-info-box {
-    background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
-    padding: 12px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px;
+    border-radius: 12px;
     margin-bottom: 12px;
-    border: 1px solid #d0d8f0;
+    color: white;
 }
 
-.org-info-box strong {
+.org-info-box .org-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
     display: block;
-    color: #333;
-    margin-bottom: 4px;
 }
 
-.org-info-box span {
-    color: #666;
+.org-info-box .org-code-box {
+    background: rgba(255,255,255,0.2);
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.org-info-box .org-code-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.org-info-box .org-code-value {
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.org-info-box .org-code-copy {
+    background: rgba(255,255,255,0.3);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
     font-size: 0.85rem;
+}
+
+.org-info-box .org-code-copy:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+.org-info-box .org-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+}
+
+.org-info-box .org-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .close-btn {

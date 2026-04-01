@@ -196,8 +196,18 @@
                 <h3 data-i18n="team">Team</h3>
                 <div id="orgSection">
                     <div id="orgInfo" class="hidden org-info-box">
-                        <strong id="orgNameDisplay"></strong>
-                        <span id="orgMemberCount"></span>
+                        <span class="org-name" id="orgNameDisplay"></span>
+                        <div class="org-code-box">
+                            <div>
+                                <div class="org-code-label" data-i18n="orgCode">Organization Code</div>
+                                <div class="org-code-value" id="orgCodeDisplay"></div>
+                            </div>
+                            <button class="org-code-copy" onclick="copyOrgCode()" data-i18n="copy">Copy</button>
+                        </div>
+                        <div class="org-stats">
+                            <div class="org-stat"><span>👥</span> <span id="orgMemberCount"></span></div>
+                            <div class="org-stat"><span>📋</span> <span id="orgBackupCount"></span></div>
+                        </div>
                     </div>
                     <button id="createOrgBtn" onclick="showCreateOrgModal()">+ <span data-i18n="createOrganization">Create Organization</span></button>
                     <button id="joinOrgBtn" class="btn-secondary hidden" onclick="showJoinOrgModal()" data-i18n="joinOrganization">Join Organization</button>
@@ -230,41 +240,6 @@
             </div>
             
             <button class="btn-secondary close-btn" onclick="closeSettings()" data-i18n="close">Close</button>
-        </div>
-            
-            <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
-            
-            <h3 style="margin-bottom: 10px; color: #333;" data-i18n="organization">Organization</h3>
-            <div id="orgSection">
-                <div id="orgInfo" class="hidden" style="background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                    <strong id="orgNameDisplay"></strong>
-                    <span id="orgMemberCount" style="color: #666; font-size: 0.85rem; display: block;"></span>
-                </div>
-                <button id="createOrgBtn" onclick="showCreateOrgModal()" data-i18n="createOrganization">+ Create Organization</button>
-                <button id="joinOrgBtn" class="btn-secondary hidden" onclick="showJoinOrgModal()" data-i18n="joinOrganization">Join Organization</button>
-                <button id="leaveOrgBtn" class="btn-danger hidden" onclick="leaveOrganization()" data-i18n="leaveOrganization">Leave Organization</button>
-            </div>
-            
-            <hr style="margin: 15px 0; border: none; border-top: 1px solid #e0e0e0;">
-            
-            <h3 style="margin-bottom: 10px; color: #333;" data-i18n="backup">Backup & Sync</h3>
-            <div id="orgBackupSection" class="hidden">
-                <button class="btn-success" onclick="shareBackupToOrg()" data-i18n="shareBackupOrg">Share Backup to Organization</button>
-                <button class="btn-secondary" onclick="loadBackupFromOrg()" data-i18n="loadBackupOrg">Load Backup from Organization</button>
-                <div id="orgBackupList" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
-            </div>
-            
-            <p style="margin-bottom: 16px; color: #666;" data-i18n="syncGoogleDrive">Sync your data with Google Drive</p>
-            <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                <span data-i18n="connectGoogle">Connect Google Drive</span>
-            </button>
-            <button id="syncToDriveBtn" class="btn-success hidden" onclick="syncToDrive()" data-i18n="uploadDrive">Upload to Google Drive</button>
-            <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()" data-i18n="downloadDrive">Download from Google Drive</button>
-            <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()" data-i18n="disconnectGoogle">Disconnect Google</button>
-            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e0e0e0;">
-            <button class="btn-danger" onclick="switchUser()" data-i18n="switchUser">Switch User</button>
-            <button class="btn-secondary" onclick="closeSettings()" style="margin-top: 10px;" data-i18n="close">Close</button>
         </div>
         
         <div id="orgModal" class="card hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; width: 90%; max-width: 400px;">

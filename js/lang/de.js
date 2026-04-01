@@ -116,6 +116,10 @@ window.translations = {
         orgBackupDesc: 'Daten mit Teammitgliedern teilen',
         patients: 'Patienten',
         teamSettings: 'Team-Einstellungen',
-        openSettings: 'Einstellungen öffnen'
+        openSettings: 'Einstellungen öffnen',
+        copy: 'Kopieren',
+        copied: 'Code kopiert!',
+        copyFailed: 'Kopieren fehlgeschlagen',
+        backups: 'Backups'
     }
 };
