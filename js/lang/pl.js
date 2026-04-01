@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Przełączyć na innego użytkownika? Wszystkie dane zostaną usunięte.',
         confirmDeletePatient: 'Proszę wpisać imię pacjenta',
         addNewMedicineOption: 'Dodaj',
-        asNewMedicine: 'jako nowy lek'
+        asNewMedicine: 'jako nowy lek',
+        general: 'Ogólne',
+        team: 'Zespół',
+        account: 'Konto',
+        orgBackupDesc: 'Udostępniaj dane członkom zespołu'
     }
 };

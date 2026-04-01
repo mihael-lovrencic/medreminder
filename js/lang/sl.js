@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Preklopite na drugega uporabnika? Vsi podatki bodo izbrisani.',
         confirmDeletePatient: 'Prosimo vnesite ime pacienta',
         addNewMedicineOption: 'Dodaj',
-        asNewMedicine: 'kot novo zdravilo'
+        asNewMedicine: 'kot novo zdravilo',
+        general: 'Splošno',
+        team: 'Ekipa',
+        account: 'Račun',
+        orgBackupDesc: 'Delite podatke s člani ekipe'
     }
 };

@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Másik felhasználóra váltani? Minden adat törlődik.',
         confirmDeletePatient: 'Kérjük adja meg a beteg nevét',
         addNewMedicineOption: 'Hozzáadás',
-        asNewMedicine: 'új gyógyszerként'
+        asNewMedicine: 'új gyógyszerként',
+        general: 'Általános',
+        team: 'Csapat',
+        account: 'Fiók',
+        orgBackupDesc: 'Adatok megosztása a csapattagokkal'
     }
 };

@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Prepnúť na iného používateľa? Všetky dáta budú vymazané.',
         confirmDeletePatient: 'Prosím zadajte meno pacienta',
         addNewMedicineOption: 'Pridať',
-        asNewMedicine: 'ako nový liek'
+        asNewMedicine: 'ako nový liek',
+        general: 'Všeobecné',
+        team: 'Tím',
+        account: 'Účet',
+        orgBackupDesc: 'Zdieľajte údaje s členmi tímu'
     }
 };

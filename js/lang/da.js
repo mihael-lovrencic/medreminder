@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Skift til en anden bruger? Alle data vil blive slettet.',
         confirmDeletePatient: 'Indtast venligst patientens navn',
         addNewMedicineOption: 'Tilføj',
-        asNewMedicine: 'som ny medicin'
+        asNewMedicine: 'som ny medicin',
+        general: 'Generelt',
+        team: 'Team',
+        account: 'Konto',
+        orgBackupDesc: 'Del data med teammedlemmer'
     }
 };
