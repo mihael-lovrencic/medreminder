@@ -116,7 +116,10 @@ const defaultTranslations = {
         general: 'General',
         team: 'Team',
         account: 'Account',
-        orgBackupDesc: 'Share data with team members'
+        orgBackupDesc: 'Share data with team members',
+        patients: 'Patients',
+        teamSettings: 'Team Settings',
+        openSettings: 'Open Settings'
     }
 };
 
