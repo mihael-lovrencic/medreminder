@@ -91,6 +91,13 @@ test.describe('Settings', () => {
         await page.click('[title="Settings"]');
         await expect(page.locator('#langSelector')).toBeVisible();
     });
+
+    test('switch language to German updates UI', async ({ page }) => {
+        await page.click('button:has-text("Try Demo")');
+        await page.click('[title="Settings"]');
+        await page.selectOption('#langSelector', 'de');
+        await expect(page.locator('#settingsModal h2')).toContainText('Einstellungen');
+    });
 });
 
 test.describe('Data', () => {

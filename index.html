@@ -57,7 +57,7 @@
                 <div id="todayView">
                     <div class="time-greeting">
                         <i class="fas fa-calendar-day"></i>
-                        <span>Today's Schedule</span>
+                        <span data-i18n="todaySchedule">Today's Schedule</span>
                     </div>
                     <div id="todayList" class="medicine-list"></div>
                     
@@ -74,7 +74,7 @@
                 <div id="allView" class="hidden">
                     <div class="time-greeting">
                         <i class="fas fa-capsules"></i>
-                        <span>All Medicines</span>
+                        <span data-i18n="allMedicines">Medicines</span>
                     </div>
                     <div id="allList" class="medicine-list"></div>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="section-header">
                         <div class="time-greeting">
                             <i class="fas fa-users"></i>
-                            <span>Patients</span>
+                            <span data-i18n="allPatients">Patients</span>
                         </div>
                         <button class="btn-icon" onclick="showPatientModal()" title="Add Patient">
                             <i class="fas fa-user-plus"></i>
@@ -101,13 +101,13 @@
                 <!-- Add Medicine Panel -->
                 <div id="addMedicinePanel" class="slide-panel hidden">
                     <div class="panel-header">
-                        <h3><i class="fas fa-capsules"></i> Add Medicine</h3>
+                        <h3 data-i18n="addMedicine"><i class="fas fa-capsules"></i> Add Medicine</h3>
                         <button class="icon-btn" onclick="toggleAddMedicine()">
                             <i class="fas fa-xmark"></i>
                         </button>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-pills"></i> Medicine Name</label>
+                        <label data-i18n="medicineName"><i class="fas fa-pills"></i> Medicine Name</label>
                         <div class="input-wrapper">
                             <input type="text" id="medName" placeholder="Search or enter medicine" data-i18n-placeholder="searchMedicine" autocomplete="off">
                             <div id="medicineDropdown" class="dropdown hidden"></div>
@@ -115,26 +115,26 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label><i class="fas fa-prescription-bottle"></i> Dosage</label>
+                            <label data-i18n="dosage"><i class="fas fa-prescription-bottle"></i> Dosage</label>
                             <input type="text" id="medDosage" placeholder="e.g., 500mg" data-i18n-placeholder="dosagePlaceholder">
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-clock"></i> Time</label>
+                            <label data-i18n="time"><i class="fas fa-clock"></i> Time</label>
                             <input type="time" id="medTime">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-note-sticky"></i> Notes</label>
+                        <label data-i18n="notes"><i class="fas fa-note-sticky"></i> Notes</label>
                         <input type="text" id="medNotes" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder">
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-box"></i> Stock (pills)</label>
+                        <label data-i18n="stockQuantity"><i class="fas fa-box"></i> Stock (pills)</label>
                         <input type="number" id="medStock" placeholder="30" min="0">
                     </div>
                     <button class="btn-primary" onclick="addMedicine()">
-                        <i class="fas fa-plus"></i> Add Medicine
+                        <i class="fas fa-plus"></i> <span data-i18n="addMedicine">Add Medicine</span>
                     </button>
-                    <button class="btn-ghost" onclick="toggleAddMedicine()">Cancel</button>
+                    <button class="btn-ghost" onclick="toggleAddMedicine()" data-i18n="cancel">Cancel</button>
                 </div>
             </main>
 
@@ -142,15 +142,15 @@
             <nav class="bottom-nav">
                 <button class="nav-item active" onclick="showView('today')">
                     <i class="fas fa-calendar-day"></i>
-                    <span>Today</span>
+                    <span data-i18n="today">Today</span>
                 </button>
                 <button class="nav-item" onclick="showView('medicines')">
                     <i class="fas fa-capsules"></i>
-                    <span>Medicines</span>
+                    <span data-i18n="allMedicines">Medicines</span>
                 </button>
                 <button class="nav-item" onclick="showView('patients')">
                     <i class="fas fa-users"></i>
-                    <span>Patients</span>
+                    <span data-i18n="allPatients">Patients</span>
                 </button>
             </nav>
         </div>
@@ -159,27 +159,27 @@
         <div id="patientModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-user"></i> <span id="patientModalTitle">Add Patient</span></h2>
+                    <h2><i class="fas fa-user"></i> <span id="patientModalTitle" data-i18n="addPatient">Add Patient</span></h2>
                     <button class="icon-btn" onclick="closePatientModal()">
                         <i class="fas fa-xmark"></i>
                     </button>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-user"></i> Patient Name</label>
+                    <label data-i18n="patientName"><i class="fas fa-user"></i> Patient Name</label>
                     <input type="text" id="patientName" placeholder="e.g., John Doe" data-i18n-placeholder="patientNamePlaceholder">
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-door-open"></i> Room</label>
+                    <label data-i18n="roomNumber"><i class="fas fa-door-open"></i> Room</label>
                     <input type="text" id="patientRoom" placeholder="e.g., Room 101" data-i18n-placeholder="roomPlaceholder">
                 </div>
                 <div class="modal-actions">
                     <button class="btn-primary" id="savePatientBtn" onclick="addPatient()">
-                        <i class="fas fa-check"></i> Save
+                        <i class="fas fa-check"></i> <span data-i18n="savePatient">Save</span>
                     </button>
                     <button class="btn-danger hidden" id="deletePatientBtn" onclick="deletePatient()">
-                        <i class="fas fa-trash"></i> Delete
+                        <i class="fas fa-trash"></i> <span data-i18n="deletePatient">Delete</span>
                     </button>
-                    <button class="btn-ghost" onclick="closePatientModal()">Cancel</button>
+                    <button class="btn-ghost" onclick="closePatientModal()" data-i18n="cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -188,14 +188,14 @@
         <div id="settingsModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-gear"></i> Settings</h2>
+                    <h2><i class="fas fa-gear"></i> <span data-i18n="settings">Settings</span></h2>
                     <button class="icon-btn" onclick="closeSettings()">
                         <i class="fas fa-xmark"></i>
                     </button>
                 </div>
                 
                 <div class="settings-section">
-                    <h3><i class="fas fa-globe"></i> Language</h3>
+                    <h3><i class="fas fa-globe"></i> <span data-i18n="language">Language</span></h3>
                     <div class="input-wrapper">
                         <select id="langSelector" onchange="onLangChange(event)">
                             <option value="en">🇬🇧 English</option>
@@ -223,7 +223,7 @@
                 </div>
 
                 <div class="settings-section">
-                    <h3><i class="fas fa-hospital"></i> Team</h3>
+                    <h3><i class="fas fa-hospital"></i> <span data-i18n="team">Team</span></h3>
                     <div id="orgSection">
                         <div id="orgInfo" class="org-card hidden">
                             <div class="org-header">
@@ -231,7 +231,7 @@
                                 <span id="orgNameDisplay"></span>
                             </div>
                             <div class="org-code">
-                                <span>Code:</span>
+                                <span data-i18n="orgCode">Code:</span>
                                 <code id="orgCodeDisplay"></code>
                                 <button class="btn-icon-sm" onclick="copyOrgCode()" title="Copy">
                                     <i class="fas fa-copy"></i>
@@ -243,21 +243,21 @@
                             </div>
                         </div>
                         <button class="btn-secondary" id="createOrgBtn" onclick="showCreateOrgModal()">
-                            <i class="fas fa-plus"></i> Create Organization
+                            <i class="fas fa-plus"></i> <span data-i18n="createOrganization">Create Organization</span>
                         </button>
                         <button class="btn-ghost hidden" id="joinOrgBtn" onclick="showJoinOrgModal()">
-                            <i class="fas fa-right-to-bracket"></i> Join Organization
+                            <i class="fas fa-right-to-bracket"></i> <span data-i18n="joinOrganization">Join Organization</span>
                         </button>
                         <button class="btn-danger-ghost hidden" id="leaveOrgBtn" onclick="leaveOrganization()">
-                            <i class="fas fa-right-from-bracket"></i> Leave
+                            <i class="fas fa-right-from-bracket"></i> <span data-i18n="leaveOrganization">Leave</span>
                         </button>
                         
                         <div id="orgBackupSection" class="hidden backup-actions">
                             <button class="btn-primary" onclick="shareBackupToOrg()">
-                                <i class="fas fa-cloud-arrow-up"></i> Share Backup
+                                <i class="fas fa-cloud-arrow-up"></i> <span data-i18n="shareBackupOrg">Share Backup</span>
                             </button>
                             <button class="btn-secondary" onclick="loadBackupFromOrg()">
-                                <i class="fas fa-cloud-arrow-down"></i> Load Backup
+                                <i class="fas fa-cloud-arrow-down"></i> <span data-i18n="loadBackupOrg">Load Backup</span>
                             </button>
                             <div id="orgBackupList"></div>
                         </div>
@@ -265,23 +265,23 @@
                 </div>
 
                 <div class="settings-section">
-                    <h3><i class="fas fa-cloud-arrow-up"></i> Backup</h3>
+                    <h3><i class="fas fa-cloud-arrow-up"></i> <span data-i18n="backup">Backup</span></h3>
                     <button class="btn-google" id="googleSignInBtn" onclick="initGoogleSync()">
-                        <i class="fab fa-google"></i> Connect Google Drive
+                        <i class="fab fa-google"></i> <span data-i18n="connectGoogle">Connect Google Drive</span>
                     </button>
                     <button class="btn-primary hidden" id="syncToDriveBtn" onclick="syncToDrive()">
-                        <i class="fas fa-cloud-arrow-up"></i> Upload
+                        <i class="fas fa-cloud-arrow-up"></i> <span data-i18n="uploadDrive">Upload</span>
                     </button>
                     <button class="btn-secondary hidden" id="syncFromDriveBtn" onclick="syncFromDrive()">
-                        <i class="fas fa-cloud-arrow-down"></i> Download
+                        <i class="fas fa-cloud-arrow-down"></i> <span data-i18n="downloadDrive">Download</span>
                     </button>
                     <button class="btn-danger-ghost hidden" id="googleSignOutBtn" onclick="signOutGoogle()">
-                        <i class="fas fa-right-from-bracket"></i> Disconnect
+                        <i class="fas fa-right-from-bracket"></i> <span data-i18n="disconnectGoogle">Disconnect</span>
                     </button>
                 </div>
 
                 <button class="btn-danger" onclick="switchUser()">
-                    <i class="fas fa-right-from-bracket"></i> Switch User
+                    <i class="fas fa-right-from-bracket"></i> <span data-i18n="switchUser">Switch User</span>
                 </button>
             </div>
         </div>
@@ -290,20 +290,20 @@
         <div id="orgModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-hospital"></i> Create Organization</h2>
+                    <h2><i class="fas fa-hospital"></i> <span data-i18n="createOrganization">Create Organization</span></h2>
                     <button class="icon-btn" onclick="closeOrgModal()">
                         <i class="fas fa-xmark"></i>
                     </button>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-hospital"></i> Organization Name</label>
+                    <label data-i18n="orgName"><i class="fas fa-hospital"></i> Organization Name</label>
                     <input type="text" id="orgNameInput" placeholder="e.g., City Hospital" data-i18n-placeholder="orgNamePlaceholder">
                 </div>
                 <div class="modal-actions">
                     <button class="btn-primary" id="saveOrgBtn" onclick="saveOrganization()">
-                        <i class="fas fa-check"></i> Create
+                        <i class="fas fa-check"></i> <span data-i18n="create">Create</span>
                     </button>
-                    <button class="btn-ghost" onclick="closeOrgModal()">Cancel</button>
+                    <button class="btn-ghost" onclick="closeOrgModal()" data-i18n="cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -312,20 +312,20 @@
         <div id="joinOrgModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-right-to-bracket"></i> Join Organization</h2>
+                    <h2><i class="fas fa-right-to-bracket"></i> <span data-i18n="joinOrganization">Join Organization</span></h2>
                     <button class="icon-btn" onclick="closeJoinOrgModal()">
                         <i class="fas fa-xmark"></i>
                     </button>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-key"></i> Organization Code</label>
+                    <label data-i18n="orgCode"><i class="fas fa-key"></i> Organization Code</label>
                     <input type="text" id="orgCodeInput" placeholder="Enter code" data-i18n-placeholder="orgCodePlaceholder">
                 </div>
                 <div class="modal-actions">
                     <button class="btn-primary" onclick="joinOrganization()">
-                        <i class="fas fa-right-to-bracket"></i> Join
+                        <i class="fas fa-right-to-bracket"></i> <span data-i18n="join">Join</span>
                     </button>
-                    <button class="btn-ghost" onclick="closeJoinOrgModal()">Cancel</button>
+                    <button class="btn-ghost" onclick="closeJoinOrgModal()" data-i18n="cancel">Cancel</button>
                 </div>
             </div>
         </div>
