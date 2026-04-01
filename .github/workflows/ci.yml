@@ -30,6 +30,8 @@ jobs:
   delete-branch:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    permissions:
+      contents: write
     steps:
       - name: Delete merged branch
         uses: dawidd6/action-delete-branch@v3
