@@ -102,7 +102,7 @@ function saveOrganization() {
     saveOrganizationData();
     closeOrgModal();
     updateOrgUI();
-    showToast('Organization created', 'success');
+    showToast(t('orgCreated') || 'Organization created', 'success');
 }
 
 function showJoinOrgModal() {
@@ -136,7 +136,7 @@ function joinOrganization() {
     saveOrganizationData();
     closeJoinOrgModal();
     updateOrgUI();
-    showToast('Joined ' + found.name, 'success');
+    showToast((t('joined') || 'Joined ') + found.name, 'success');
 }
 
 function leaveOrganization() {
@@ -683,9 +683,9 @@ async function syncToDrive() {
             form.append('file', new Blob([JSON.stringify(allData)], { type: 'application/json' }));
             await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', { method: 'POST', headers: { Authorization: 'Bearer ' + state.accessToken }, body: form });
         }
-        showToast('Uploaded to Google Drive!', 'success');
+        showToast(t('uploaded') || 'Uploaded to Google Drive!', 'success');
     } catch (e) {
-        showToast('Upload failed: ' + e.message, 'error');
+        showToast((t('uploadFailed') || 'Upload failed: ') + e.message, 'error');
     }
 }
 
@@ -709,9 +709,9 @@ async function syncFromDrive() {
             loadPatientData(state.currentPatientId);
         }
         showApp();
-        showToast('Loaded from Google Drive!', 'success');
+        showToast(t('downloaded') || 'Loaded from Google Drive!', 'success');
     } catch (e) {
-        showToast('Download failed: ' + e.message, 'error');
+        showToast((t('downloadFailed') || 'Download failed: ') + e.message, 'error');
     }
 }
 
