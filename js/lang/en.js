@@ -114,6 +114,10 @@ window.translations = {
         orgBackupDesc: 'Share data with team members',
         patients: 'Patients',
         teamSettings: 'Team Settings',
-        openSettings: 'Open Settings'
+        openSettings: 'Open Settings',
+        copy: 'Copy',
+        copied: 'Code copied!',
+        copyFailed: 'Failed to copy code',
+        backups: 'backups'
     }
 };
