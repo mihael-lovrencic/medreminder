@@ -468,6 +468,7 @@ function showApp() {
     document.getElementById('appScreen').classList.remove('hidden');
     document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
     document.getElementById('userNameDisplay').textContent = currentUser.name;
+    updateMenuUserInfo();
 
     if (currentUser.isGoogle) {
         document.getElementById('googleSignInBtn').classList.add('hidden');
@@ -494,10 +495,28 @@ function showApp() {
 
 function showSettings() {
     document.getElementById('settingsModal').classList.remove('hidden');
+    updateMenuUserInfo();
 }
 
 function closeSettings() {
     document.getElementById('settingsModal').classList.add('hidden');
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    menu.classList.toggle('active');
+    updateMenuUserInfo();
+}
+
+function closeMenu() {
+    document.getElementById('sideMenu').classList.remove('active');
+}
+
+function updateMenuUserInfo() {
+    if (currentUser) {
+        document.getElementById('menuUserAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('menuUserName').textContent = currentUser.name;
+    }
 }
 
 function switchUser() {
@@ -511,6 +530,7 @@ function switchUser() {
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('userName').value = '';
         closeSettings();
+        closeMenu();
     }
 }
 

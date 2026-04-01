@@ -113,6 +113,9 @@ window.translations = {
         general: 'Allgemein',
         team: 'Team',
         account: 'Konto',
-        orgBackupDesc: 'Daten mit Teammitgliedern teilen'
+        orgBackupDesc: 'Daten mit Teammitgliedern teilen',
+        patients: 'Patienten',
+        teamSettings: 'Team-Einstellungen',
+        openSettings: 'Einstellungen öffnen'
     }
 };

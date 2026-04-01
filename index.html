@@ -24,12 +24,51 @@
         </div>
 
         <div id="appScreen" class="hidden">
-            <div class="user-header">
+            <nav class="top-nav">
+                <div class="nav-left">
+                    <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <span class="app-title">💊 MedReminder</span>
+                </div>
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">U</div>
                     <span id="userNameDisplay">User</span>
                 </div>
-                <button class="btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showSettings()" data-i18n="settings">Settings</button>
+            </nav>
+            
+            <div id="sideMenu" class="side-menu">
+                <div class="menu-overlay" onclick="closeMenu()"></div>
+                <div class="menu-content">
+                    <div class="menu-header">
+                        <div class="user-avatar large" id="menuUserAvatar">U</div>
+                        <div>
+                            <strong id="menuUserName">User</strong>
+                        </div>
+                    </div>
+                    <div class="menu-links">
+                        <button onclick="showPatientModal(); closeMenu();">
+                            <span>👤</span> <span data-i18n="addPatient">Add Patient</span>
+                        </button>
+                        <button onclick="showTab('today'); closeMenu();">
+                            <span>📋</span> <span data-i18n="todaySchedule">Today's Schedule</span>
+                        </button>
+                        <button onclick="showTab('all'); closeMenu();">
+                            <span>💊</span> <span data-i18n="allMedicines">All Medicines</span>
+                        </button>
+                        <button onclick="showCreateOrgModal(); closeMenu();">
+                            <span>🏥</span> <span data-i18n="createOrganization">Create Organization</span>
+                        </button>
+                        <button onclick="showSettings(); closeMenu();">
+                            <span>⚙️</span> <span data-i18n="settings">Settings</span>
+                        </button>
+                    </div>
+                    <div class="menu-footer">
+                        <button class="btn-danger" onclick="switchUser(); closeMenu();" data-i18n="switchUser">Switch User</button>
+                    </div>
+                </div>
             </div>
             <div id="syncStatus" class="sync-status hidden"></div>
             

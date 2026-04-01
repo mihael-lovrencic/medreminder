@@ -113,6 +113,9 @@ window.translations = {
         general: 'Općenito',
         team: 'Tim',
         account: 'Račun',
-        orgBackupDesc: 'Podijeli podatke s članovima tima'
+        orgBackupDesc: 'Podijeli podatke s članovima tima',
+        patients: 'Pacijenti',
+        teamSettings: 'Postavke tima',
+        openSettings: 'Otvori postavke'
     }
 };
