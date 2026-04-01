@@ -1,5 +1,7 @@
 window.translations = {
     hr: {
+        appName: 'MedReminder',
+        appTagline: 'Pratite lijekove za svoje pacijente',
         welcome: 'Dobrodošli u MedReminder',
         subtitle: 'Praćenje lijekova za više pacijenata',
         enterName: 'Unesite svoje ime (medicinska sestra/skrbnik)',
@@ -64,6 +66,7 @@ window.translations = {
         pillsLeft: 'tableta preostalo',
         orderNow: 'NARUČI ODMAH!',
         lowStockWarning: 'Upozorenje - niske zalihe',
+        lowStockAlert: 'Upozorenje o zalihama',
         organization: 'Organizacija',
         createOrganization: 'Kreiraj organizaciju',
         joinOrganization: 'Pridruži se organizaciji',

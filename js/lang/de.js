@@ -1,5 +1,7 @@
 window.translations = {
     de: {
+        appName: 'MedReminder',
+        appTagline: 'Medikamente für Ihre Patienten verfolgen',
         welcome: 'Willkommen bei MedReminder',
         subtitle: 'Medikamente für mehrere Patienten verfolgen',
         enterName: 'Geben Sie Ihren Namen ein (Pflegekraft)',
@@ -64,6 +66,7 @@ window.translations = {
         pillsLeft: 'Tabletten übrig',
         orderNow: 'JETZT BESTELLEN!',
         lowStockWarning: 'Niedriger Bestand Warnung',
+        lowStockAlert: 'Niedriger Bestand Alert',
         organization: 'Organisation',
         createOrganization: 'Organisation erstellen',
         joinOrganization: 'Organisation beitreten',
