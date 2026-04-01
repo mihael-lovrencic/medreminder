@@ -76,7 +76,7 @@ function updateOrgUI() {
     if (currentOrganization) {
         orgInfo.classList.remove('hidden');
         document.getElementById('orgNameDisplay').textContent = currentOrganization.name;
-        document.getElementById('orgMemberCount').textContent = `${currentOrganization.members.length} member(s) | Code: ${currentOrganization.code}`;
+        document.getElementById('orgMemberCount').textContent = currentOrganization.members.length + ' ' + (t('memberCount') || 'member(s)') + ' | Code: ' + currentOrganization.code;
         createBtn.classList.add('hidden');
         joinBtn.classList.add('hidden');
         leaveBtn.classList.remove('hidden');
@@ -200,7 +200,7 @@ function leaveOrganization() {
     currentOrganization = null;
     localStorage.removeItem(`medreminder_org_${currentUser.id}`);
     updateOrgUI();
-    showSyncStatus('Left organization', 'success');
+    showSyncStatus(t('leftOrganization') || 'Left organization', 'success');
 }
 
 function shareBackupToOrg() {
@@ -229,7 +229,7 @@ function shareBackupToOrg() {
     currentOrganization.backups.push(backupData);
     saveOrganizationData();
     renderOrgBackupList();
-    showSyncStatus('Backup shared to organization', 'success');
+    showSyncStatus(t('backupShared') || 'Backup shared to organization', 'success');
 }
 
 function loadBackupFromOrg() {
@@ -259,13 +259,13 @@ function loadBackupFromOrg() {
     
     renderPatientList();
     renderLists();
-    showSyncStatus('Backup loaded from organization', 'success');
+    showSyncStatus(t('backupLoaded') || 'Backup loaded from organization', 'success');
 }
 
 function renderOrgBackupList() {
     const container = document.getElementById('orgBackupList');
     if (!currentOrganization || currentOrganization.backups.length === 0) {
-        container.innerHTML = '<p style="color: #666; font-size: 0.85rem;">No backups shared yet</p>';
+        container.innerHTML = '<p style="color: #666; font-size: 0.85rem;">' + (t('noBackupsShared') || 'No backups shared yet') + '</p>';
         return;
     }
     
@@ -274,7 +274,7 @@ function renderOrgBackupList() {
         <div style="padding: 8px; background: #f5f5f5; border-radius: 4px; margin-bottom: 5px; font-size: 0.85rem;">
             <strong>${b.sharedByName}</strong><br>
             <span style="color: #666;">${new Date(b.sharedAt).toLocaleDateString()} ${new Date(b.sharedAt).toLocaleTimeString()}</span>
-            <span style="color: #888; font-size: 0.75rem; display: block;">${b.patients?.length || 0} patients</span>
+            <span style="color: #888; font-size: 0.75rem; display: block;">${b.patients?.length || 0} ${t('patientCount') || 'patients'}</span>
         </div>
     `).join('');
 }
@@ -335,7 +335,7 @@ function setupMedicineDropdown() {
         }
         
         if (showAddNew) {
-            html += `<div class="medicine-option add-new" onclick="addNewMedicine('${query.replace(/'/g, "\\'")}')">+ Add "${query}" as new medicine</div>`;
+            html += `<div class="medicine-option add-new" onclick="addNewMedicine('${query.replace(/'/g, "\\'")}')">+ ${t('addNewMedicineOption') || 'Add'} "${query}" ${t('asNewMedicine') || 'as new medicine'}</div>`;
         }
         
         if (html) {
@@ -374,7 +374,7 @@ function addNewMedicine(name) {
 function createUser() {
     const name = document.getElementById('userName').value.trim();
     if (!name) {
-        alert('Please enter your name');
+        alert(t('enterUserName') || 'Please enter your name');
         return;
     }
     currentUser = { id: 'user_' + Date.now(), name: name, isGoogle: false };
@@ -434,7 +434,7 @@ function startDemoMode() {
     loadPatientData(currentPatientId);
     showApp();
     
-    showSyncStatus('Demo mode active - try editing and managing!', 'synced');
+    showSyncStatus(t('demoModeActive') || 'Demo mode active - try editing and managing!', 'synced');
 }
 
 function loadPatients() {
@@ -460,7 +460,7 @@ function loadPatientData(patientId) {
 function savePatientData() {
     if (!currentPatientId) return;
     localStorage.setItem(getPatientStorageKey(currentPatientId), JSON.stringify({ medicines, takenToday }));
-    showSyncStatus('Saved: ' + new Date().toLocaleTimeString(), 'pending');
+    showSyncStatus(t('savedAt') + ': ' + new Date().toLocaleTimeString(), 'pending');
 }
 
 function showApp() {
@@ -501,7 +501,7 @@ function closeSettings() {
 }
 
 function switchUser() {
-    if (confirm('Switch to a different user? All data will be cleared.')) {
+    if (confirm(t('switchUserConfirm'))) {
         localStorage.removeItem('medreminder_user');
         localStorage.removeItem(`medreminder_patients_${currentUser.id}`);
         currentUser = null;
@@ -604,7 +604,7 @@ function addPatient() {
     const room = document.getElementById('patientRoom').value.trim();
     
     if (!name) {
-        alert('Please enter patient name');
+        alert(t('confirmDeletePatient') || 'Please enter patient name');
         return;
     }
     
@@ -764,11 +764,11 @@ function renderLists() {
     const getStockBadge = (med) => {
         if (med.stock === null || med.stock === undefined) return '';
         if (med.stock <= 5) {
-            return `<span class="stock-badge stock-critical">${med.stock} left</span>`;
+            return `<span class="stock-badge stock-critical">${med.stock} ${t('left') || 'left'}</span>`;
         } else if (med.stock <= 10) {
-            return `<span class="stock-badge stock-warning">${med.stock} left</span>`;
+            return `<span class="stock-badge stock-warning">${med.stock} ${t('left') || 'left'}</span>`;
         }
-        return `<span class="stock-badge stock-ok">${med.stock} in stock</span>`;
+        return `<span class="stock-badge stock-ok">${med.stock} ${t('inStock') || 'in stock'}</span>`;
     };
 
     const render = (list) => {
@@ -812,7 +812,7 @@ function showTab(tab) {
 
 function initGoogleSync() {
     if (!GOOGLE_CLIENT_ID) {
-        alert('Google Client ID not configured');
+        alert(t('googleNotConfigured') || 'Google Client ID not configured');
         return;
     }
 
@@ -840,10 +840,10 @@ function initGoogleSync() {
                     loadPatients();
                     showApp();
                     closeSettings();
-                    showSyncStatus('Connected to Google!', 'synced');
+                    showSyncStatus(t('googleConnected') || 'Connected to Google!', 'synced');
                 } catch (e) {
                     console.error('Failed to get user info:', e);
-                    showSyncStatus('Connected but failed to get profile', 'pending');
+                    showSyncStatus(t('googleProfileFailed') || 'Connected but failed to get profile', 'pending');
                 }
             }
         }
@@ -854,7 +854,7 @@ function initGoogleSync() {
 
 async function syncToDrive() {
     if (!currentUser.isGoogle || !accessToken) {
-        alert('Please connect Google Drive first');
+        alert(t('connectGoogleFirst') || 'Please connect Google Drive first');
         return;
     }
 
@@ -910,10 +910,10 @@ async function syncToDrive() {
 
 async function syncFromDrive() {
     if (!currentUser.isGoogle || !accessToken) {
-        alert('Please connect Google Drive first');
+        alert(t('connectGoogleFirst') || 'Please connect Google Drive first');
         return;
     }
-
+    
     try {
         const searchResponse = await fetch('https://www.googleapis.com/drive/v3/files?q=name="medreminder_backup.json"', {
             headers: { 'Authorization': 'Bearer ' + accessToken }
@@ -922,7 +922,7 @@ async function syncFromDrive() {
         const searchResult = await searchResponse.json();
 
         if (!searchResult.files || searchResult.files.length === 0) {
-            alert('No backup found on Google Drive');
+            alert(t('noBackup') || 'No backup found on Google Drive');
             return;
         }
 
@@ -973,7 +973,7 @@ function signOutGoogle() {
     document.getElementById('syncFromDriveBtn').classList.add('hidden');
     document.getElementById('googleSignOutBtn').classList.add('hidden');
 
-    showSyncStatus('Google disconnected', 'pending');
+    showSyncStatus(t('googleDisconnected') || 'Google disconnected', 'pending');
 }
 
 document.addEventListener('DOMContentLoaded', init);
