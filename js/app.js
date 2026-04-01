@@ -195,7 +195,7 @@ function loadBackupFromOrg() {
 function renderOrgBackupList() {
     const container = document.getElementById('orgBackupList');
     if (!state.organization?.backups.length) {
-        container.innerHTML = `<p style="color:#666;font-size:14px">${t('noBackupsShared') || 'No backups yet'}</p>`;
+        container.innerHTML = `<p style="color:#888;font-size:14px">${t('noBackupsShared')}</p>`;
         return;
     }
     container.innerHTML = state.organization.backups.slice(-5).reverse().map(b => {
@@ -511,7 +511,7 @@ function renderPatientList() {
     if (!list) return;
     
     if (!state.patients.length) {
-        list.innerHTML = `<div class="empty-state"><p>${t('noPatients')}</p></div>`;
+        list.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>${t('noPatients')}</p></div>`;
         return;
     }
     
@@ -624,8 +624,8 @@ function renderLists() {
         `;
     };
     
-    document.getElementById('todayList').innerHTML = todayMeds.length ? todayMeds.map(renderItem).join('') : '<div class="empty-state"><p>No medicines due now</p></div>';
-    document.getElementById('allList').innerHTML = state.medicines.length ? state.medicines.map(renderItem).join('') : '<div class="empty-state"><p>No medicines added</p></div>';
+    document.getElementById('todayList').innerHTML = todayMeds.length ? todayMeds.map(renderItem).join('') : '<div class="empty-state"><i class="fas fa-capsules"></i><p>No medicines due now</p></div>';
+    document.getElementById('allList').innerHTML = state.medicines.length ? state.medicines.map(renderItem).join('') : '<div class="empty-state"><i class="fas fa-capsules"></i><p>No medicines added</p></div>';
     
     renderPatientList();
 }

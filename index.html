@@ -6,23 +6,37 @@
     <title>MedReminder</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
         <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
-            <div class="logo">💊</div>
-            <h1>MedReminder</h1>
-            <p class="tagline">Track medicines for your patients</p>
-            <div class="login-form">
-                <input type="text" id="userName" placeholder="Your name" data-i18n-placeholder="enterName">
-                <button onclick="createUser()" data-i18n="continueBtn">Continue</button>
+            <div class="login-card">
+                <div class="login-logo">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h1>MedReminder</h1>
+                <p>Track medicines for your patients</p>
+                <div class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="userName" placeholder="Your name" data-i18n-placeholder="enterName">
+                    </div>
+                    <button class="btn-primary" onclick="createUser()" data-i18n="continueBtn">
+                        <i class="fas fa-arrow-right"></i> Continue
+                    </button>
+                </div>
+                <div class="login-divider">
+                    <span>or</span>
+                </div>
+                <button class="btn-google" onclick="initGoogleSync()">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+                <button class="btn-ghost" onclick="startDemoMode()" data-i18n="tryDemo">
+                    <i class="fas fa-play"></i> Try Demo Mode
+                </button>
             </div>
-            <button class="btn-google" onclick="initGoogleSync()">
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                <span data-i18n="signInGoogle">Sign in with Google</span>
-            </button>
-            <button class="btn-text" onclick="startDemoMode()" data-i18n="tryDemo">Try Demo Mode</button>
         </div>
 
         <!-- Main App -->
@@ -31,213 +45,287 @@
                 <div class="header-left">
                     <select id="patientSelector" onchange="onPatientChange(event)"></select>
                 </div>
-                <button class="icon-btn" onclick="showSettings()">⚙️</button>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="showSettings()" title="Settings">
+                        <i class="fas fa-gear"></i>
+                    </button>
+                </div>
             </header>
 
             <main class="app-content">
-                <!-- Today's Tab -->
+                <!-- Today's View -->
                 <div id="todayView">
-                    <div class="section">
-                        <h3 data-i18n="todaySchedule">Today's Schedule</h3>
-                        <div id="todayList" class="medicine-list"></div>
+                    <div class="time-greeting">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>Today's Schedule</span>
                     </div>
+                    <div id="todayList" class="medicine-list"></div>
+                    
                     <div id="stockWarning" class="stock-alert hidden">
-                        <span class="alert-icon">⚠️</span>
+                        <div class="alert-header">
+                            <i class="fas fa-triangle-exclamation"></i>
+                            <span>Low Stock Alert</span>
+                        </div>
                         <div id="lowStockList"></div>
                     </div>
                 </div>
 
-                <!-- All Medicines Tab -->
+                <!-- All Medicines View -->
                 <div id="allView" class="hidden">
-                    <div class="section">
-                        <h3 data-i18n="allMedicines">All Medicines</h3>
-                        <div id="allList" class="medicine-list"></div>
+                    <div class="time-greeting">
+                        <i class="fas fa-capsules"></i>
+                        <span>All Medicines</span>
                     </div>
+                    <div id="allList" class="medicine-list"></div>
                 </div>
 
-                <!-- Patients Tab -->
+                <!-- Patients View -->
                 <div id="patientsView" class="hidden">
-                    <div class="section">
-                        <div class="section-header">
-                            <h3 data-i18n="allPatients">Patients</h3>
-                            <button class="btn-sm" onclick="showPatientModal()" data-i18n="addPatient">+ Add</button>
+                    <div class="section-header">
+                        <div class="time-greeting">
+                            <i class="fas fa-users"></i>
+                            <span>Patients</span>
                         </div>
-                        <div id="patientList" class="patient-grid"></div>
+                        <button class="btn-icon" onclick="showPatientModal()" title="Add Patient">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
                     </div>
+                    <div id="patientList" class="patient-grid"></div>
                 </div>
 
-                <!-- Add Medicine (FAB) -->
-                <button class="fab" onclick="toggleAddMedicine()">+</button>
+                <!-- FAB -->
+                <button class="fab" onclick="toggleAddMedicine()" title="Add Medicine">
+                    <i class="fas fa-plus"></i>
+                </button>
 
                 <!-- Add Medicine Panel -->
                 <div id="addMedicinePanel" class="slide-panel hidden">
                     <div class="panel-header">
-                        <h3 data-i18n="addMedicine">Add Medicine</h3>
-                        <button class="icon-btn" onclick="toggleAddMedicine()">✕</button>
+                        <h3><i class="fas fa-capsules"></i> Add Medicine</h3>
+                        <button class="icon-btn" onclick="toggleAddMedicine()">
+                            <i class="fas fa-xmark"></i>
+                        </button>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="medicineName">Medicine Name</label>
-                        <input type="text" id="medName" placeholder="Search or enter medicine" data-i18n-placeholder="searchMedicine" autocomplete="off">
-                        <div id="medicineDropdown" class="dropdown hidden"></div>
+                        <label><i class="fas fa-pills"></i> Medicine Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="medName" placeholder="Search or enter medicine" data-i18n-placeholder="searchMedicine" autocomplete="off">
+                            <div id="medicineDropdown" class="dropdown hidden"></div>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label data-i18n="dosage">Dosage</label>
+                            <label><i class="fas fa-prescription-bottle"></i> Dosage</label>
                             <input type="text" id="medDosage" placeholder="e.g., 500mg" data-i18n-placeholder="dosagePlaceholder">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="time">Time</label>
+                            <label><i class="fas fa-clock"></i> Time</label>
                             <input type="time" id="medTime">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="notes">Notes</label>
+                        <label><i class="fas fa-note-sticky"></i> Notes</label>
                         <input type="text" id="medNotes" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder">
                     </div>
                     <div class="form-group">
-                        <label data-i18n="stockQuantity">Stock (pills)</label>
+                        <label><i class="fas fa-box"></i> Stock (pills)</label>
                         <input type="number" id="medStock" placeholder="30" min="0">
                     </div>
-                    <button onclick="addMedicine()" data-i18n="addMedicine">Add Medicine</button>
+                    <button class="btn-primary" onclick="addMedicine()">
+                        <i class="fas fa-plus"></i> Add Medicine
+                    </button>
+                    <button class="btn-ghost" onclick="toggleAddMedicine()">Cancel</button>
                 </div>
             </main>
 
             <!-- Bottom Navigation -->
             <nav class="bottom-nav">
                 <button class="nav-item active" onclick="showView('today')">
-                    <span class="nav-icon">📋</span>
-                    <span data-i18n="today">Today</span>
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Today</span>
                 </button>
                 <button class="nav-item" onclick="showView('medicines')">
-                    <span class="nav-icon">💊</span>
-                    <span data-i18n="allMedicines">Medicines</span>
+                    <i class="fas fa-capsules"></i>
+                    <span>Medicines</span>
                 </button>
                 <button class="nav-item" onclick="showView('patients')">
-                    <span class="nav-icon">👥</span>
-                    <span data-i18n="allPatients">Patients</span>
+                    <i class="fas fa-users"></i>
+                    <span>Patients</span>
                 </button>
             </nav>
         </div>
 
-        <!-- Modals -->
+        <!-- Patient Modal -->
         <div id="patientModal" class="modal hidden">
             <div class="modal-content">
-                <h2 id="patientModalTitle" data-i18n="addPatient">Add Patient</h2>
+                <div class="modal-header">
+                    <h2><i class="fas fa-user"></i> <span id="patientModalTitle">Add Patient</span></h2>
+                    <button class="icon-btn" onclick="closePatientModal()">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
                 <div class="form-group">
-                    <label data-i18n="patientName">Patient Name</label>
+                    <label><i class="fas fa-user"></i> Patient Name</label>
                     <input type="text" id="patientName" placeholder="e.g., John Doe" data-i18n-placeholder="patientNamePlaceholder">
                 </div>
                 <div class="form-group">
-                    <label data-i18n="roomNumber">Room</label>
+                    <label><i class="fas fa-door-open"></i> Room</label>
                     <input type="text" id="patientRoom" placeholder="e.g., Room 101" data-i18n-placeholder="roomPlaceholder">
                 </div>
                 <div class="modal-actions">
-                    <button id="savePatientBtn" onclick="addPatient()" data-i18n="savePatient">Save</button>
-                    <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()" data-i18n="deletePatient">Delete</button>
-                    <button class="btn-text" onclick="closePatientModal()" data-i18n="cancel">Cancel</button>
+                    <button class="btn-primary" id="savePatientBtn" onclick="addPatient()">
+                        <i class="fas fa-check"></i> Save
+                    </button>
+                    <button class="btn-danger hidden" id="deletePatientBtn" onclick="deletePatient()">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button class="btn-ghost" onclick="closePatientModal()">Cancel</button>
                 </div>
             </div>
         </div>
 
+        <!-- Settings Modal -->
         <div id="settingsModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 data-i18n="settings">Settings</h2>
-                    <button class="icon-btn" onclick="closeSettings()">✕</button>
+                    <h2><i class="fas fa-gear"></i> Settings</h2>
+                    <button class="icon-btn" onclick="closeSettings()">
+                        <i class="fas fa-xmark"></i>
+                    </button>
                 </div>
                 
-                <div class="settings-group">
-                    <label data-i18n="language">Language</label>
-                    <select id="langSelector" onchange="onLangChange(event)">
-                        <option value="en">English</option>
-                        <option value="de">Deutsch</option>
-                        <option value="hr">Hrvatski</option>
-                        <option value="hu">Magyar</option>
-                        <option value="sl">Slovenščina</option>
-                        <option value="it">Italiano</option>
-                        <option value="fr">Français</option>
-                        <option value="es">Español</option>
-                        <option value="pl">Polski</option>
-                        <option value="cs">Čeština</option>
-                        <option value="sk">Slovenčina</option>
-                        <option value="ro">Română</option>
-                        <option value="sr">Сpscки</option>
-                        <option value="nl">Nederlands</option>
-                        <option value="sv">Svenska</option>
-                        <option value="fi">Suomi</option>
-                        <option value="da">Dansk</option>
-                        <option value="no">Norsk</option>
-                        <option value="pt">Português</option>
-                        <option value="el">Ελληνικά</option>
-                    </select>
+                <div class="settings-section">
+                    <h3><i class="fas fa-globe"></i> Language</h3>
+                    <div class="input-wrapper">
+                        <select id="langSelector" onchange="onLangChange(event)">
+                            <option value="en">🇬🇧 English</option>
+                            <option value="de">🇩🇪 Deutsch</option>
+                            <option value="hr">🇭🇷 Hrvatski</option>
+                            <option value="hu">🇭🇺 Magyar</option>
+                            <option value="sl">🇸🇮 Slovenščina</option>
+                            <option value="it">🇮🇹 Italiano</option>
+                            <option value="fr">🇫🇷 Français</option>
+                            <option value="es">🇪🇸 Español</option>
+                            <option value="pl">🇵🇱 Polski</option>
+                            <option value="cs">🇨🇿 Čeština</option>
+                            <option value="sk">🇸🇰 Slovenčina</option>
+                            <option value="ro">🇷🇴 Română</option>
+                            <option value="sr">🇷🇸 Сpscки</option>
+                            <option value="nl">🇳🇱 Nederlands</option>
+                            <option value="sv">🇸🇪 Svenska</option>
+                            <option value="fi">🇫🇮 Suomi</option>
+                            <option value="da">🇩🇰 Dansk</option>
+                            <option value="no">🇳🇴 Norsk</option>
+                            <option value="pt">🇵🇹 Português</option>
+                            <option value="el">🇬🇷 Ελληνικά</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="settings-group">
-                    <h3 data-i18n="team">Team</h3>
+                <div class="settings-section">
+                    <h3><i class="fas fa-hospital"></i> Team</h3>
                     <div id="orgSection">
                         <div id="orgInfo" class="org-card hidden">
-                            <div class="org-name" id="orgNameDisplay"></div>
+                            <div class="org-header">
+                                <i class="fas fa-hospital"></i>
+                                <span id="orgNameDisplay"></span>
+                            </div>
                             <div class="org-code">
-                                <span data-i18n="orgCode">Code:</span>
-                                <span id="orgCodeDisplay"></span>
-                                <button class="btn-sm" onclick="copyOrgCode()" data-i18n="copy">Copy</button>
+                                <span>Code:</span>
+                                <code id="orgCodeDisplay"></code>
+                                <button class="btn-icon-sm" onclick="copyOrgCode()" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                             </div>
                             <div class="org-stats">
-                                <span id="orgMemberCount"></span>
-                                <span id="orgBackupCount"></span>
+                                <span><i class="fas fa-users"></i> <span id="orgMemberCount"></span></span>
+                                <span><i class="fas fa-cloud-arrow-up"></i> <span id="orgBackupCount"></span></span>
                             </div>
                         </div>
-                        <button id="createOrgBtn" onclick="showCreateOrgModal()" data-i18n="createOrganization">+ Create Organization</button>
-                        <button id="joinOrgBtn" class="hidden" onclick="showJoinOrgModal()" data-i18n="joinOrganization">Join Organization</button>
-                        <button id="leaveOrgBtn" class="btn-danger hidden" onclick="leaveOrganization()" data-i18n="leaveOrganization">Leave</button>
+                        <button class="btn-secondary" id="createOrgBtn" onclick="showCreateOrgModal()">
+                            <i class="fas fa-plus"></i> Create Organization
+                        </button>
+                        <button class="btn-ghost hidden" id="joinOrgBtn" onclick="showJoinOrgModal()">
+                            <i class="fas fa-right-to-bracket"></i> Join Organization
+                        </button>
+                        <button class="btn-danger-ghost hidden" id="leaveOrgBtn" onclick="leaveOrganization()">
+                            <i class="fas fa-right-from-bracket"></i> Leave
+                        </button>
                         
-                        <div id="orgBackupSection" class="hidden">
-                            <button class="btn-primary" onclick="shareBackupToOrg()" data-i18n="shareBackupOrg">Share Backup</button>
-                            <button class="btn-secondary" onclick="loadBackupFromOrg()" data-i18n="loadBackupOrg">Load Backup</button>
+                        <div id="orgBackupSection" class="hidden backup-actions">
+                            <button class="btn-primary" onclick="shareBackupToOrg()">
+                                <i class="fas fa-cloud-arrow-up"></i> Share Backup
+                            </button>
+                            <button class="btn-secondary" onclick="loadBackupFromOrg()">
+                                <i class="fas fa-cloud-arrow-down"></i> Load Backup
+                            </button>
                             <div id="orgBackupList"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="settings-group">
-                    <h3 data-i18n="backup">Backup</h3>
-                    <button id="googleSignInBtn" class="btn-google" onclick="initGoogleSync()">
-                        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                        <span data-i18n="connectGoogle">Connect Google Drive</span>
+                <div class="settings-section">
+                    <h3><i class="fas fa-cloud-arrow-up"></i> Backup</h3>
+                    <button class="btn-google" id="googleSignInBtn" onclick="initGoogleSync()">
+                        <i class="fab fa-google"></i> Connect Google Drive
                     </button>
-                    <button id="syncToDriveBtn" class="btn-primary hidden" onclick="syncToDrive()" data-i18n="uploadDrive">Upload</button>
-                    <button id="syncFromDriveBtn" class="btn-secondary hidden" onclick="syncFromDrive()" data-i18n="downloadDrive">Download</button>
-                    <button id="googleSignOutBtn" class="btn-danger hidden" onclick="signOutGoogle()" data-i18n="disconnectGoogle">Disconnect</button>
+                    <button class="btn-primary hidden" id="syncToDriveBtn" onclick="syncToDrive()">
+                        <i class="fas fa-cloud-arrow-up"></i> Upload
+                    </button>
+                    <button class="btn-secondary hidden" id="syncFromDriveBtn" onclick="syncFromDrive()">
+                        <i class="fas fa-cloud-arrow-down"></i> Download
+                    </button>
+                    <button class="btn-danger-ghost hidden" id="googleSignOutBtn" onclick="signOutGoogle()">
+                        <i class="fas fa-right-from-bracket"></i> Disconnect
+                    </button>
                 </div>
 
-                <button class="btn-danger" onclick="switchUser()" data-i18n="switchUser">Switch User</button>
+                <button class="btn-danger" onclick="switchUser()">
+                    <i class="fas fa-right-from-bracket"></i> Switch User
+                </button>
             </div>
         </div>
 
+        <!-- Org Modal -->
         <div id="orgModal" class="modal hidden">
             <div class="modal-content">
-                <h2 id="orgModalTitle" data-i18n="createOrganization">Create Organization</h2>
+                <div class="modal-header">
+                    <h2><i class="fas fa-hospital"></i> Create Organization</h2>
+                    <button class="icon-btn" onclick="closeOrgModal()">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
                 <div class="form-group">
-                    <label data-i18n="orgName">Organization Name</label>
+                    <label><i class="fas fa-hospital"></i> Organization Name</label>
                     <input type="text" id="orgNameInput" placeholder="e.g., City Hospital" data-i18n-placeholder="orgNamePlaceholder">
                 </div>
                 <div class="modal-actions">
-                    <button id="saveOrgBtn" onclick="saveOrganization()" data-i18n="create">Create</button>
-                    <button class="btn-text" onclick="closeOrgModal()" data-i18n="cancel">Cancel</button>
+                    <button class="btn-primary" id="saveOrgBtn" onclick="saveOrganization()">
+                        <i class="fas fa-check"></i> Create
+                    </button>
+                    <button class="btn-ghost" onclick="closeOrgModal()">Cancel</button>
                 </div>
             </div>
         </div>
 
+        <!-- Join Org Modal -->
         <div id="joinOrgModal" class="modal hidden">
             <div class="modal-content">
-                <h2 data-i18n="joinOrganization">Join Organization</h2>
+                <div class="modal-header">
+                    <h2><i class="fas fa-right-to-bracket"></i> Join Organization</h2>
+                    <button class="icon-btn" onclick="closeJoinOrgModal()">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
                 <div class="form-group">
-                    <label data-i18n="orgCode">Organization Code</label>
+                    <label><i class="fas fa-key"></i> Organization Code</label>
                     <input type="text" id="orgCodeInput" placeholder="Enter code" data-i18n-placeholder="orgCodePlaceholder">
                 </div>
                 <div class="modal-actions">
-                    <button onclick="joinOrganization()" data-i18n="join">Join</button>
-                    <button class="btn-text" onclick="closeJoinOrgModal()" data-i18n="cancel">Cancel</button>
+                    <button class="btn-primary" onclick="joinOrganization()">
+                        <i class="fas fa-right-to-bracket"></i> Join
+                    </button>
+                    <button class="btn-ghost" onclick="closeJoinOrgModal()">Cancel</button>
                 </div>
             </div>
         </div>
