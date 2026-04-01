@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Bytte til en annen bruker? Alle data vil bli slettet.',
         confirmDeletePatient: 'Vennligst skriv inn pasientens navn',
         addNewMedicineOption: 'Legg til',
-        asNewMedicine: 'som ny medisin'
+        asNewMedicine: 'som ny medisin',
+        general: 'Generelt',
+        team: 'Team',
+        account: 'Konto',
+        orgBackupDesc: 'Del data med teammedlemmer'
     }
 };

@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Treceți la alt utilizator? Toate datele vor fi șterse.',
         confirmDeletePatient: 'Vă rugăm să introduceți numele pacientului',
         addNewMedicineOption: 'Adaugă',
-        asNewMedicine: 'ca medicament nou'
+        asNewMedicine: 'ca medicament nou',
+        general: 'General',
+        team: 'Echipă',
+        account: 'Cont',
+        orgBackupDesc: 'Partajați datele cu membrii echipei'
     }
 };

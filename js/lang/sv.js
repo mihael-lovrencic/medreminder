@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Växla till en annan användare? All data kommer att raderas.',
         confirmDeletePatient: 'Vänligen ange patientens namn',
         addNewMedicineOption: 'Lägg till',
-        asNewMedicine: 'som ny medicin'
+        asNewMedicine: 'som ny medicin',
+        general: 'Allmänt',
+        team: 'Team',
+        account: 'Konto',
+        orgBackupDesc: 'Dela data med teammedlemmar'
     }
 };

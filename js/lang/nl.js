@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Naar een andere gebruiker schakelen? Alle gegevens worden gewist.',
         confirmDeletePatient: 'Voer a.u.b. de naam van de patiënt in',
         addNewMedicineOption: 'Toevoegen',
-        asNewMedicine: 'als nieuw medicijn'
+        asNewMedicine: 'als nieuw medicijn',
+        general: 'Algemeen',
+        team: 'Team',
+        account: 'Account',
+        orgBackupDesc: 'Deel gegevens met teamleden'
     }
 };

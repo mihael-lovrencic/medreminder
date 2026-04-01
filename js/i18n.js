@@ -112,7 +112,11 @@ const defaultTranslations = {
         switchUserConfirm: 'Switch to a different user? All data will be cleared.',
         confirmDeletePatient: 'Please enter patient name',
         addNewMedicineOption: 'Add',
-        asNewMedicine: 'as new medicine'
+        asNewMedicine: 'as new medicine',
+        general: 'General',
+        team: 'Team',
+        account: 'Account',
+        orgBackupDesc: 'Share data with team members'
     }
 };
 

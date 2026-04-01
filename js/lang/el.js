@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Αλλαγή σε άλλο χρήστη; Όλα τα δεδομένα θα διαγραφούν.',
         confirmDeletePatient: 'Παρακαλώ εισάγετε το όνομα του ασθενούς',
         addNewMedicineOption: 'Προσθήκη',
-        asNewMedicine: 'ως νέο φάρμακο'
+        asNewMedicine: 'ως νέο φάρμακο',
+        general: 'Γενικά',
+        team: 'Ομάδα',
+        account: 'Λογαριασμός',
+        orgBackupDesc: 'Κοινοποίηση δεδομένων με μέλη της ομάδας'
     }
 };

@@ -107,6 +107,10 @@ window.translations = {
         orgCodePlaceholder: 'Enter organization code',
         confirmDeletePatient: 'Please enter patient name',
         addNewMedicineOption: 'Add',
-        asNewMedicine: 'as new medicine'
+        asNewMedicine: 'as new medicine',
+        general: 'General',
+        team: 'Team',
+        account: 'Account',
+        orgBackupDesc: 'Share data with team members'
     }
 };

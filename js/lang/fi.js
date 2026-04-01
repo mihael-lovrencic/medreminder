@@ -108,6 +108,10 @@ window.translations = {
         switchUserConfirm: 'Vaihtaa toiselle käyttäjälle? Kaikki tiedot poistetaan.',
         confirmDeletePatient: 'Ole hyvä ja anna potilaan nimi',
         addNewMedicineOption: 'Lisää',
-        asNewMedicine: 'uutena lääkkeenä'
+        asNewMedicine: 'uutena lääkkeenä',
+        general: 'Yleinen',
+        team: 'Tiimi',
+        account: 'Tili',
+        orgBackupDesc: 'Jaa tiedot tiimin jäsenten kanssa'
     }
 };
