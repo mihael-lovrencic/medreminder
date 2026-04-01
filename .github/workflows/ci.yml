@@ -3,6 +3,7 @@ name: CI Tests
 on:
   pull_request:
     branches: [main]
+    types: [closed, opened, synchronize]
   push:
     branches: [main]
 
@@ -25,3 +26,13 @@ jobs:
 
       - name: Run tests
         run: npx playwright test --timeout=60000
+
+  delete-branch:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Delete merged branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: ${{ github.event.pull_request.head.ref }}
