@@ -3,6 +3,8 @@ let currentLang = 'en';
 
 const defaultTranslations = {
     en: {
+        appName: 'MedReminder',
+        appTagline: 'Track medicines for your patients',
         continueBtn: 'Continue',
         signInGoogle: 'Sign in with Google',
         tryDemo: 'Try Demo Mode',
@@ -15,6 +17,7 @@ const defaultTranslations = {
         deletePatient: 'Delete',
         today: 'Today',
         allMedicines: 'Medicines',
+        lowStockAlert: 'Low Stock Alert',
         addMedicine: 'Add Medicine',
         medicineName: 'Medicine Name',
         dosage: 'Dosage',
