@@ -47,11 +47,11 @@
             </div>
             
             <div id="stockWarning" class="card" style="background: #fef3c7; display: none;">
-                <h3 style="color: #92400e; margin-bottom: 8px;">📦 Low Stock Warning</h3>
+                <h3 style="color: #92400e; margin-bottom: 8px;" data-i18n="lowStockWarning">📦 Low Stock Warning</h3>
                 <div id="lowStockList"></div>
             </div>
 
-            <h1>💊 MedReminder</h1>
+            <h1 data-i18n="medReminder">💊 MedReminder</h1>
             <div class="tabs">
                 <button class="tab active" onclick="showTab('today')" data-i18n="today">Today</button>
                 <button class="tab" onclick="showTab('all')" data-i18n="allMedicines">All Medicines</button>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="form-group">
                         <label data-i18n="dosage">Dosage</label>
-                        <input type="text" id="medDosage" placeholder="e.g., 1 tablet">
+                        <input type="text" id="medDosage" data-i18n-placeholder="dosagePlaceholder" placeholder="e.g., 1 tablet">
                     </div>
                     <div class="form-group">
                         <label data-i18n="time">Time</label>
@@ -110,11 +110,11 @@
             <h2 id="patientModalTitle" data-i18n="addPatient">Add Patient</h2>
             <div class="form-group">
                 <label data-i18n="patientName">Patient Name</label>
-                <input type="text" id="patientName" placeholder="e.g., John Doe">
+                <input type="text" id="patientName" data-i18n-placeholder="patientNamePlaceholder" placeholder="e.g., John Doe">
             </div>
             <div class="form-group">
                 <label data-i18n="roomNumber">Room Number (optional)</label>
-                <input type="text" id="patientRoom" placeholder="e.g., Room 101">
+                <input type="text" id="patientRoom" data-i18n-placeholder="roomPlaceholder" placeholder="e.g., Room 101">
             </div>
             <button id="savePatientBtn" onclick="addPatient()" data-i18n="savePatient">Save Patient</button>
             <button id="deletePatientBtn" class="btn-danger hidden" onclick="deletePatient()" data-i18n="deletePatient">Delete Patient</button>
@@ -189,7 +189,7 @@
             <h2 id="orgModalTitle" data-i18n="createOrganization">Create Organization</h2>
             <div class="form-group">
                 <label data-i18n="orgName">Organization Name</label>
-                <input type="text" id="orgNameInput" placeholder="e.g., City Hospital Ward A">
+                <input type="text" id="orgNameInput" data-i18n-placeholder="orgNamePlaceholder" placeholder="e.g., City Hospital Ward A">
             </div>
             <button id="saveOrgBtn" onclick="saveOrganization()" data-i18n="create">Create</button>
             <button class="btn-secondary" onclick="closeOrgModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
@@ -199,7 +199,7 @@
             <h2 data-i18n="joinOrganization">Join Organization</h2>
             <div class="form-group">
                 <label data-i18n="orgCode">Organization Code</label>
-                <input type="text" id="orgCodeInput" placeholder="Enter organization code">
+                <input type="text" id="orgCodeInput" data-i18n-placeholder="orgCodePlaceholder" placeholder="Enter organization code">
             </div>
             <button onclick="joinOrganization()" data-i18n="join">Join</button>
             <button class="btn-secondary" onclick="closeJoinOrgModal()" style="margin-top: 10px;" data-i18n="cancel">Cancel</button>
